@@ -7,7 +7,8 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-
+from connector import c,db
+userID = None
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -123,10 +124,7 @@ class Ui_MainWindow(object):
         self.profileButton = QtWidgets.QPushButton(parent=self.profileFrame)
         self.profileButton.setGeometry(QtCore.QRect(10, 10, 61, 61))
         self.profileButton.setText("")
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("avatar.jpg"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.profileButton.setIcon(icon7)
-        self.profileButton.setIconSize(QtCore.QSize(52, 52))
+        
         self.profileButton.setObjectName("profileButton")
         self.profileButton.clicked.connect(self.showMenu)
         self.NicknameLabel = QtWidgets.QLabel(parent=self.profileFrame)
@@ -137,13 +135,14 @@ class Ui_MainWindow(object):
         self.NicknameLabel.setObjectName("NicknameLabel")
         self.StatusLabel = QtWidgets.QLabel(parent=self.profileFrame)
         self.StatusLabel.setGeometry(QtCore.QRect(80, 30, 101, 16))
+        self.StatusLabel.setStyleSheet("color: rgb(70, 180, 0);")
         font = QtGui.QFont()
         font.setFamily("W95FA")
         font.setPointSize(8)
         self.StatusLabel.setFont(font)
         self.StatusLabel.setObjectName("StatusLabel")
         self.mmrIcoLabel = QtWidgets.QLabel(parent=self.profileFrame)
-        self.mmrIcoLabel.setGeometry(QtCore.QRect(200, -10, 91, 91))
+        self.mmrIcoLabel.setGeometry(QtCore.QRect(190, -10, 91, 91))
         self.mmrIcoLabel.setText("")
         self.mmrIcoLabel.setPixmap(QtGui.QPixmap("noTitle.png"))
         self.mmrIcoLabel.setScaledContents(True)
@@ -251,6 +250,13 @@ class Ui_MainWindow(object):
         self.chatTextEdit.setReadOnly(True)
         self.chatTextEdit.setCursorWidth(0)
         self.chatTextEdit.setObjectName("chatTextEdit")
+        self.chatMessages = QtWidgets.QTextEdit(parent=self.tab)
+        self.chatMessages.setGeometry(QtCore.QRect(0, 0, 331, 131))
+        self.chatMessages.setUndoRedoEnabled(True)
+        self.chatMessages.setLineWrapMode(QtWidgets.QTextEdit.LineWrapMode.WidgetWidth)
+        self.chatMessages.setReadOnly(True)
+        self.chatMessages.setCursorWidth(0)
+        self.chatMessages.setObjectName("chatMessages")
         self.chatWidget.addTab(self.tab, "")
         self.playButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.playButton.setGeometry(QtCore.QRect(800, 610, 171, 41))
@@ -272,8 +278,7 @@ class Ui_MainWindow(object):
         self.profileButtonProfile = QtWidgets.QPushButton(parent=self.tab_2)
         self.profileButtonProfile.setGeometry(QtCore.QRect(10, 10, 130, 130))
         self.profileButtonProfile.setText("")
-        self.profileButtonProfile.setIcon(icon7)
-        self.profileButtonProfile.setIconSize(QtCore.QSize(128, 128))
+        
         self.profileButtonProfile.setObjectName("profileButtonProfile")
         self.profileButtonProfile.clicked.connect(self.showMenu)
         self.mmrIcoProfileLabel = QtWidgets.QLabel(parent=self.tab_2)
@@ -282,20 +287,20 @@ class Ui_MainWindow(object):
         self.mmrIcoProfileLabel.setPixmap(QtGui.QPixmap("noTitle.png"))
         self.mmrIcoProfileLabel.setScaledContents(True)
         self.mmrIcoProfileLabel.setObjectName("mmrIcoProfileLabel")
-        self.StatusLabel_2 = QtWidgets.QLabel(parent=self.tab_2)
-        self.StatusLabel_2.setGeometry(QtCore.QRect(150, 30, 141, 16))
+        self.StatusLabelProfile = QtWidgets.QLabel(parent=self.tab_2)
+        self.StatusLabelProfile.setGeometry(QtCore.QRect(150, 30, 141, 16))
         font = QtGui.QFont()
         font.setFamily("W95FA")
         font.setPointSize(10)
-        self.StatusLabel_2.setFont(font)
-        self.StatusLabel_2.setObjectName("StatusLabel_2")
-        self.NicknameLabel_2 = QtWidgets.QLabel(parent=self.tab_2)
-        self.NicknameLabel_2.setGeometry(QtCore.QRect(150, 10, 151, 16))
+        self.StatusLabelProfile.setFont(font)
+        self.StatusLabelProfile.setObjectName("StatusLabelProfile")
+        self.NicknameLabelProfile = QtWidgets.QLabel(parent=self.tab_2)
+        self.NicknameLabelProfile.setGeometry(QtCore.QRect(150, 10, 151, 16))
         font = QtGui.QFont()
         font.setFamily("W95FA")
         font.setPointSize(11)
-        self.NicknameLabel_2.setFont(font)
-        self.NicknameLabel_2.setObjectName("NicknameLabel_2")
+        self.NicknameLabelProfile.setFont(font)
+        self.NicknameLabelProfile.setObjectName("NicknameLabelProfile")
         self.favouriteButton1Profile = QtWidgets.QPushButton(parent=self.tab_2)
         self.favouriteButton1Profile.setGeometry(QtCore.QRect(150, 90, 71, 51))
         self.favouriteButton1Profile.setText("")
@@ -440,8 +445,8 @@ class Ui_MainWindow(object):
         self.chatLineEdit.setPlaceholderText(_translate("MainWindow", "(All Chat): Type here to chat. Use \'/\' to commands."))
         self.chatWidget.setTabText(self.chatWidget.indexOf(self.tab), _translate("MainWindow", "All Chat"))
         self.playButton.setText(_translate("MainWindow", "PLAY DOTA"))
-        self.StatusLabel_2.setText(_translate("MainWindow", "AAAAAAAA"))
-        self.NicknameLabel_2.setText(_translate("MainWindow", "AAAAAAAAAAAA"))
+        self.StatusLabelProfile.setText(_translate("MainWindow", "AAAAAAAA"))
+        self.NicknameLabelProfile.setText(_translate("MainWindow", "AAAAAAAAAAAA"))
         self.label_8.setText(_translate("MainWindow", "Matches"))
         self.label_9.setText(_translate("MainWindow", "Wins"))
         self.machesCountProfileLabel.setText(_translate("MainWindow", "0"))
@@ -459,6 +464,12 @@ class Ui_MainWindow(object):
         self.tabWidget.setVisible(False)
         self.changeBackgroundButton.setText(_translate("MainWindow", "CHANGE BACKGROUND IMAGE"))
         self.changeBackgroundButton.setVisible(False)
+        self.profileFrame.setVisible(False)
+        self.chatWidget.setVisible(False)
+        self.playButton.setVisible(False)
+        self.frame_4.setVisible(False)
+        self.frame.setEnabled(False)
+        
 
     def showMenu(self):
         if self.profileFrame.isVisible():
@@ -467,18 +478,92 @@ class Ui_MainWindow(object):
             self.playButton.setVisible(False)
             self.frame_4.setVisible(False)
             self.tabWidget.setVisible(True)
+            self.changeBackgroundButton.setVisible(True)
         else:
             self.profileFrame.setVisible(True)
             self.chatWidget.setVisible(True)
             self.playButton.setVisible(True)
             self.frame_4.setVisible(True)
             self.tabWidget.setVisible(False)
+            self.changeBackgroundButton.setVisible(False)
     
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec())
+    def Init(self,uID):
+        global userID
+        userID = uID
+        self.update()
+        self.profileFrame.setVisible(True)
+        self.chatWidget.setVisible(True)
+        self.playButton.setVisible(True)
+        self.frame_4.setVisible(True)
+        self.frame.setEnabled(True)
+        
+    def update(self):
+        c.execute("SELECT nickname,winValue,looseValue,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,level,DateCreate FROM player WHERE ID = %s",(userID,))
+        results = c.fetchone()
+        self.gemsLabel.setText(str(results[4]))
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(results[5]), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.profileButton.setIcon(icon7)
+        self.profileButton.setIconSize(QtCore.QSize(52, 52))
+        self.profileButtonProfile.setIcon(icon7)
+        self.profileButtonProfile.setIconSize(QtCore.QSize(128,128))
+        
+        self.matchesCountLabel.setText(str(int(results[1])+int(results[2])))
+        self.machesCountProfileLabel.setText(str(int(results[1])+int(results[2])))
+        self.winsCountLabel.setText(str(results[1]))
+        self.winsCountProfileLabel.setText(str(results[1]))
+        self.NicknameLabel.setText(results[0])
+        self.NicknameLabelProfile.setText(results[0])
+        
+        c.execute("SELECT Value FROM playerstatus WHERE ID = %s",(results[6],))
+        status = c.fetchone()[0]
+        
+        self.StatusLabel.setText(status)
+        self.StatusLabelProfile.setText(status)
+        
+        self.friendIDLabel.setText(f"FRIEND ID: {userID}")
+        self.levelLabel.setText(str(results[8]))
+        dt = results[9]
+        self.dateInGameLabel.setText(dt.strftime('%d.%m.%Y'))
+        self.mmrIcoLabel
+        mmr = int(results[3])
+        mmrIco = "noTitle.png"
+        match mmr:
+            case r if r>=1 and r<=700:
+                mmrIco = "recrut.png"
+            case r if r>=701 and r<=1400:
+                mmrIco = "straj.png"
+            case r if r>=1401 and r<=2100:
+                mmrIco = "ritchar.png"
+            case r if r>=2101 and r<=2950:
+                mmrIco = "hero.png"
+            case r if r>=2951 and r<=3700:
+                mmrIco = "legenda.png"
+            case r if r>=3701 and r<=4600:
+                mmrIco = "vlastelin.png"
+            case r if r>=4601 and r<=5600:
+                mmrIco = "god.png"
+            case r if r>5600:
+                mmrIco = "tityan.png"
+            case _:
+                pass
+        self.mmrIcoLabel.setPixmap(QtGui.QPixmap(mmrIco))
+        self.mmrIcoLabel.setScaledContents(True)
+        self.mmrIcoProfileLabel.setPixmap(QtGui.QPixmap(mmrIco))
+        self.mmrIcoProfileLabel.setScaledContents(True)
+        self.updateChat()
+    def updateChat(self):
+        #ник at дата время сообщение
+        #c.execute("SELECT * FROM tovar INNER JOIN manufacturer ON tovar.ManufacturerID = manufacturer.ID INNER JOIN typetovar ON tovar.TypeID = typetovar.ID)
+        # WHERE CONCAT(typetovar.Value,' ',manufacturer.Value,' ',tovar.Name) LIKE '%"+self.lineEdit.text()+"%'")
+        c.execute("SELECT CONCAT(player.nickname,' at ', playerchat.DateSend, ' ', playerchat.text) FROM playerchat INNER JOIN player ON playerchat.playerID = player.ID")
+        messages = c.fetchall()
+        c.execute("SELECT nickname FROM player")
+        nicks = c.fetchall()
+        for message in messages:
+            self.chatMessages.append(message[0])
+        for nick in nicks:
+            self.chatTextEdit.append(nick[0])
+        
+    
+

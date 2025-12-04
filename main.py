@@ -7,13 +7,18 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QMessageBox as mg
+from mainwin import Ui_MainWindow
+from connector import c,db
+from datetime import datetime
 
+userID = None
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(447, 321)
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
+class Ui_Reg(object):
+    def setupUi(self, RegWindow):
+        RegWindow.setObjectName("RegWindow")
+        RegWindow.resize(447, 321)
+        self.centralwidget = QtWidgets.QWidget(parent=RegWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(parent=self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(30, 10, 391, 41))
@@ -149,26 +154,27 @@ class Ui_MainWindow(object):
         self.label_5.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.label_5.setWordWrap(True)
         self.label_5.setObjectName("label_5")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
+        RegWindow.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(parent=RegWindow)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        RegWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(RegWindow)
+        QtCore.QMetaObject.connectSlotsByName(RegWindow)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, RegWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "WELCOME TO DOTA2"))
-        self.label_2.setText(_translate("MainWindow", "JOIN THE BATTLE"))
-        self.label_3.setText(_translate("MainWindow", "Nickname:"))
-        self.label_4.setText(_translate("MainWindow", "Password:"))
-        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Enter your nickname"))
-        self.lineEdit_2.setPlaceholderText(_translate("MainWindow", "Enter your account\'s password"))
-        self.checkBox.setText(_translate("MainWindow", "Hide password"))
-        self.pushButton.setText(_translate("MainWindow", "PLAY FREE NOW"))
-        self.label_5.setText(_translate("MainWindow", "Every day, millions of pIayers worldwide enter the battle as one of over а hundred Dota Heroes in а 5v5 team clash. lt\'s completely tree to play and always be - start defending уоur ancient now."))
+        RegWindow.setWindowTitle(_translate("RegWindow", "RegWindow"))
+        self.label.setText(_translate("RegWindow", "WELCOME TO DOTA2"))
+        self.label_2.setText(_translate("RegWindow", "JOIN THE BATTLE"))
+        self.label_3.setText(_translate("RegWindow", "Nickname:"))
+        self.label_4.setText(_translate("RegWindow", "Password:"))
+        self.lineEdit.setPlaceholderText(_translate("RegWindow", "Enter your nickname"))
+        self.lineEdit_2.setPlaceholderText(_translate("RegWindow", "Enter your account\'s password"))
+        self.checkBox.setText(_translate("RegWindow", "Hide password"))
+        self.pushButton.setText(_translate("RegWindow", "PLAY FREE NOW"))
+        self.pushButton.clicked.connect(self.autorization)
+        self.label_5.setText(_translate("RegWindow", "Every day, millions of pIayers worldwide enter the battle as one of over а hundred Dota Heroes in а 5v5 team clash. lt\'s completely tree to play and always be - start defending уоur ancient now."))
 
     def hidePassword(self,checked):
         if checked:
@@ -176,11 +182,57 @@ class Ui_MainWindow(object):
         else:
             self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.EchoMode.Normal)
     
+    def registration(self,nickname,password):
+        global userID
+        currentDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c.execute("INSERT INTO player(nickname,level,winValue,looseValue,DateCreate,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,password) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(nickname,1,0,0,currentDate,0,0,"avatar.jpg",1,None,password,))
+        db.commit()
+        c.execute("LAST_INSERT_ID()")
+        userID = c.fetchone()
+        self.InitMain()
+    
+    def autorization(self):
+        global userID
+        nickname = self.lineEdit.text()
+        password = self.lineEdit_2.text()
+        if nickname == "":
+            mg.warning(None,"Ошибка","Введите логин",mg.StandardButton.Ok)
+        else:
+            c.execute("SELECT password, ID FROM player WHERE nickname = %s",(nickname,))
+            dbPassword = c.fetchone()
+            if dbPassword == None:
+                if password == "":
+                    mg.warning(None,"Ошибка","Введите пароль",mg.StandardButton.Ok)
+                else:
+                    reply = mg.question(None,"Подтверждение","Вы уверены?",QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
+                    if reply == mg.StandardButton.Yes:
+                        self.registration(nickname,password)
+            elif password == dbPassword[0]:
+                userID = dbPassword[1]
+                self.InitMain()
+            else:
+                mg.warning(None,"Ошибка","Неверный пароль",mg.StandardButton.Ok)
+                
+        
+    def InitMain(self):
+        ui_main.Init(userID)
+        RegWindow.hide()
+        print(userID)
+
+
+
+
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
+    ui = Ui_Reg()   
+    ui_main = Ui_MainWindow()
+
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+    RegWindow = QtWidgets.QMainWindow()
+    ui_main.setupUi(MainWindow)
+    ui.setupUi(RegWindow)
     MainWindow.show()
+    RegWindow.show()
     sys.exit(app.exec())
