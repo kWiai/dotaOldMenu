@@ -7,6 +7,7 @@ try:
         use_pure=True,
         port=3306
     ) 
+    db.autocommit = True
     c = db.cursor()
     c.execute("USE dota")
 except Error as e:

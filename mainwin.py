@@ -8,14 +8,24 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from connector import c,db
+from datetime import datetime
+import os
 userID = None
 
 class Ui_MainWindow(object):
+    def __init__ (self):
+        self.click_count = 0
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(991, 686)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.update_timer = QtCore.QTimer()
+        self.update_timer.timeout.connect(self.globalUpdate)
+        self.update_timer.start(1000) 
+        self.click_timer = QtCore.QTimer()
+        self.click_timer.setSingleShot(True) 
+        self.click_timer.timeout.connect(self.reset_click_count)
         self.frame = QtWidgets.QFrame(parent=self.centralwidget)
         self.frame.setEnabled(True)
         self.frame.setGeometry(QtCore.QRect(0, 0, 991, 51))
@@ -25,6 +35,7 @@ class Ui_MainWindow(object):
         self.pushButton = QtWidgets.QPushButton(parent=self.frame)
         self.pushButton.setGeometry(QtCore.QRect(120, 0, 81, 51))
         self.pushButton.setText("")
+        self.pushButton.clicked.connect(self.showMenu)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icons8-дота-2-48.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.pushButton.setIcon(icon)
@@ -126,7 +137,7 @@ class Ui_MainWindow(object):
         self.profileButton.setText("")
         
         self.profileButton.setObjectName("profileButton")
-        self.profileButton.clicked.connect(self.showMenu)
+        self.profileButton.clicked.connect(self.showProfile)
         self.NicknameLabel = QtWidgets.QLabel(parent=self.profileFrame)
         self.NicknameLabel.setGeometry(QtCore.QRect(80, 10, 101, 16))
         font = QtGui.QFont()
@@ -202,13 +213,14 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(parent=self.frame_4)
         self.comboBox.setGeometry(QtCore.QRect(10, 10, 191, 31))
         self.comboBox.setObjectName("comboBox")
-        self.pushButton_15 = QtWidgets.QPushButton(parent=self.frame_4)
-        self.pushButton_15.setGeometry(QtCore.QRect(210, 10, 31, 31))
-        self.pushButton_15.setText("")
+        self.pushButton_addFriend = QtWidgets.QPushButton(parent=self.frame_4)
+        self.pushButton_addFriend.setGeometry(QtCore.QRect(210, 10, 31, 31))
+        self.pushButton_addFriend.setText("")
         icon8 = QtGui.QIcon()
         icon8.addPixmap(QtGui.QPixmap("w95ico/win95-winxp_icons-master/icons/w98_world_phonereceiver.ico"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.pushButton_15.setIcon(icon8)
-        self.pushButton_15.setObjectName("pushButton_15")
+        self.pushButton_addFriend.setIcon(icon8)
+        self.pushButton_addFriend.setObjectName("pushButton_addFriend")
+        self.pushButton_addFriend.clicked.connect(self.openAddFriend)
         self.pushButton_22 = QtWidgets.QPushButton(parent=self.frame_4)
         self.pushButton_22.setGeometry(QtCore.QRect(240, 10, 31, 31))
         self.pushButton_22.setText("")
@@ -262,6 +274,68 @@ class Ui_MainWindow(object):
         self.playButton.setGeometry(QtCore.QRect(800, 610, 171, 41))
         font = QtGui.QFont()
         font.setFamily("W95FA")
+        self.addFriendFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.addFriendFrame.setGeometry(QtCore.QRect(310, 190, 391, 211))
+        self.addFriendFrame.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.addFriendFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.addFriendFrame.setObjectName("addFriendFrame")
+        self.addFriendFrame.setVisible(False)
+        self.label_friend = QtWidgets.QLabel(parent=self.addFriendFrame)
+        self.label_friend.setGeometry(QtCore.QRect(140, 10, 131, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.label_friend.setFont(font)
+        self.label_friend.setObjectName("label")
+        self.searchFriendLineEdit = QtWidgets.QLineEdit(parent=self.addFriendFrame)
+        self.searchFriendLineEdit.setGeometry(QtCore.QRect(10, 40, 371, 22))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.searchFriendLineEdit.setFont(font)
+        self.searchFriendLineEdit.setObjectName("searchFriendLineEdit")
+        self.searchFriendLineEdit.textChanged.connect(self.searchFriend)
+        self.rejectButton = QtWidgets.QPushButton(parent=self.addFriendFrame)
+        self.rejectButton.setGeometry(QtCore.QRect(10, 150, 171, 51))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.rejectButton.setFont(font)
+        self.rejectButton.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(207, 0, 0);")
+        self.rejectButton.setObjectName("rejectButton")
+        self.rejectButton.clicked.connect(self.closeAddFriend)
+        self.rejectButton.setEnabled(True)
+        
+        self.addFriendButton = QtWidgets.QPushButton(parent=self.addFriendFrame)
+        self.addFriendButton.setGeometry(QtCore.QRect(210, 150, 171, 51))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.addFriendButton.setFont(font)
+        self.addFriendButton.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(70, 180, 0);")
+        self.addFriendButton.setObjectName("addFriendButton")
+        self.addFriendButton.clicked.connect(self.addFriend)
+        self.addFriendButton.setVisible(False)
+        self.searchAvatarlabel = QtWidgets.QLabel(parent=self.addFriendFrame)
+        self.searchAvatarlabel.setGeometry(QtCore.QRect(30, 70, 60, 60))
+        self.searchAvatarlabel.setText("")
+        self.searchAvatarlabel.setPixmap(QtGui.QPixmap("../Desktop/dota/avatar.jpg"))
+        self.searchAvatarlabel.setScaledContents(True)
+        self.searchAvatarlabel.setObjectName("searchAvatarlabel")
+        self.searchAvatarlabel.setVisible(False)
+        self.searchNickLabel = QtWidgets.QLabel(parent=self.addFriendFrame)
+        self.searchNickLabel.setGeometry(QtCore.QRect(110, 80, 49, 16))
+        
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.searchNickLabel.setFont(font)
+        self.searchNickLabel.setObjectName("serchNickLabel")
+        self.searchNickLabel.setVisible(False)
+        self.searchStatusLabel = QtWidgets.QLabel(parent=self.addFriendFrame)
+        self.searchStatusLabel.setGeometry(QtCore.QRect(110, 110, 49, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.searchStatusLabel.setFont(font)
+        self.searchStatusLabel.setObjectName("searchStatusLabel")
+        self.searchStatusLabel.setVisible(False)
         self.playButton.setFont(font)
         self.playButton.setStyleSheet("color: rgb(255, 255, 255);\n"
 "border-color: rgb(255, 255, 255);\n"
@@ -278,9 +352,8 @@ class Ui_MainWindow(object):
         self.profileButtonProfile = QtWidgets.QPushButton(parent=self.tab_2)
         self.profileButtonProfile.setGeometry(QtCore.QRect(10, 10, 130, 130))
         self.profileButtonProfile.setText("")
-        
+        self.profileButtonProfile.clicked.connect(self.changeAvatar)
         self.profileButtonProfile.setObjectName("profileButtonProfile")
-        self.profileButtonProfile.clicked.connect(self.showMenu)
         self.mmrIcoProfileLabel = QtWidgets.QLabel(parent=self.tab_2)
         self.mmrIcoProfileLabel.setGeometry(QtCore.QRect(0, 110, 91, 91))
         self.mmrIcoProfileLabel.setText("")
@@ -442,6 +515,12 @@ class Ui_MainWindow(object):
         self.matchesCountLabel.setText(_translate("MainWindow", "0"))
         self.winsCountLabel.setText(_translate("MainWindow", "0"))
         self.chatSendButton.setText(_translate("MainWindow", "SEND"))
+        self.chatSendButton.clicked.connect(self.sendMessage)
+        self.label_friend.setText(_translate("MainWindow", "INSERT PLAYERS ID:"))
+        self.rejectButton.setText(_translate("MainWindow", "REJECT"))
+        self.addFriendButton.setText(_translate("MainWindow", "ADD FRIEND"))
+        self.searchNickLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.searchStatusLabel.setText(_translate("MainWindow", "TextLabel"))
         self.chatLineEdit.setPlaceholderText(_translate("MainWindow", "(All Chat): Type here to chat. Use \'/\' to commands."))
         self.chatWidget.setTabText(self.chatWidget.indexOf(self.tab), _translate("MainWindow", "All Chat"))
         self.playButton.setText(_translate("MainWindow", "PLAY DOTA"))
@@ -472,6 +551,15 @@ class Ui_MainWindow(object):
         
 
     def showMenu(self):
+        if not self.profileFrame.isVisible():
+            self.profileFrame.setVisible(True)
+            self.chatWidget.setVisible(True)
+            self.playButton.setVisible(True)
+            self.frame_4.setVisible(True)
+            self.tabWidget.setVisible(False)
+            self.changeBackgroundButton.setVisible(False)
+    
+    def showProfile(self):
         if self.profileFrame.isVisible():
             self.profileFrame.setVisible(False)
             self.chatWidget.setVisible(False)
@@ -479,13 +567,6 @@ class Ui_MainWindow(object):
             self.frame_4.setVisible(False)
             self.tabWidget.setVisible(True)
             self.changeBackgroundButton.setVisible(True)
-        else:
-            self.profileFrame.setVisible(True)
-            self.chatWidget.setVisible(True)
-            self.playButton.setVisible(True)
-            self.frame_4.setVisible(True)
-            self.tabWidget.setVisible(False)
-            self.changeBackgroundButton.setVisible(False)
     
     def Init(self,uID):
         global userID
@@ -553,10 +634,9 @@ class Ui_MainWindow(object):
         self.mmrIcoProfileLabel.setScaledContents(True)
         self.updateChat()
     def updateChat(self):
-        #ник at дата время сообщение
-        #c.execute("SELECT * FROM tovar INNER JOIN manufacturer ON tovar.ManufacturerID = manufacturer.ID INNER JOIN typetovar ON tovar.TypeID = typetovar.ID)
-        # WHERE CONCAT(typetovar.Value,' ',manufacturer.Value,' ',tovar.Name) LIKE '%"+self.lineEdit.text()+"%'")
-        c.execute("SELECT CONCAT(player.nickname,' at ', playerchat.DateSend, ' ', playerchat.text) FROM playerchat INNER JOIN player ON playerchat.playerID = player.ID")
+        self.chatTextEdit.clear()
+        self.chatMessages.clear()
+        c.execute("SELECT CONCAT(player.nickname,' at ', playerchat.DateSend, ' ', playerchat.text) FROM playerchat INNER JOIN player ON playerchat.playerID = player.ID ORDER BY playerchat.DateSend")
         messages = c.fetchall()
         c.execute("SELECT nickname FROM player")
         nicks = c.fetchall()
@@ -564,6 +644,102 @@ class Ui_MainWindow(object):
             self.chatMessages.append(message[0])
         for nick in nicks:
             self.chatTextEdit.append(nick[0])
+            
+    def sendMessage(self):
+        if self.chatLineEdit.text().strip() == "":
+            QtWidgets.QMessageBox.warning(None,"Ошибка","Текст не может быть пустым", QtWidgets.QMessageBox.StandardButton.Ok)
+        else:
+            currentDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            c.execute("INSERT INTO playerchat(playerID,text,DateSend) VALUES(%s,%s,%s)",(userID,self.chatLineEdit.text(),currentDate,))
+            self.updateChat()
+            self.chatLineEdit.clear()
+            
+    
+    def changeAvatar(self):
+        self.click_count += 1
+        if self.click_count == 1:
+            self.click_timer.start(300)
+        elif self.click_count == 2:
+            file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self.centralwidget, "Выберите файл", "", "All Files (*)")
+
+            if file_path:
+                file_extension = os.path.splitext(file_path)[1].lower()
+                allowed_extensions = ['.png', '.jpg', '.jpeg']
+                if file_extension in allowed_extensions:
+                    c.execute("UPDATE player SET avatarPath = %s WHERE ID = %s",(file_path,userID,))
+                else:
+                    QtWidgets.QMessageBox.warning(None,"Ошибка","Некоректный тип файла",QtWidgets.QMessageBox.StandardButton.Ok)
+            else:
+                print("Файл не был выбран")
+            
+            
+            
+            self.click_timer.stop() 
+            self.reset_click_count()
+
+    def reset_click_count(self):
+        self.click_count = 0
+    
+    def openAddFriend(self):
+        self.addFriendFrame.setVisible(True)
+        self.addFriendFrame.raise_()
+    
+    def closeAddFriend(self):
+        self.addFriendFrame.setVisible(False)
         
+    def searchFriend(self):
+        friendID = self.searchFriendLineEdit.text()
+        currentFriends = []
+        c.execute("SELECT friendID FROM friendlist WHERE playerID = %s",(userID,))
+        res = c.fetchall()
+        if res != None:
+            for r in res:
+                currentFriends.append(r[0])
+        print(currentFriends)
+        if friendID != "":
+            if int(friendID) != userID and int(friendID) not in currentFriends:
+                c.execute("SELECT nickname,statusID,avatarPath FROM player WHERE ID = %s",(friendID,))
+                res = c.fetchone()
+                if res == None:
+                    self.searchAvatarlabel.setVisible(False)
+                    self.searchNickLabel.setVisible(False)
+                    self.searchStatusLabel.setVisible(False)
+                    self.addFriendButton.setVisible(False)
+                else:
+                    self.addFriendButton.setVisible(True)
+                    
+                    self.searchNickLabel.setText(res[0])
+                    self.searchNickLabel.adjustSize()
+                    c.execute("SELECT Value FROM playerstatus WHERE ID = %s",(res[1],))
+                    self.searchStatusLabel.setText(c.fetchone()[0])
+                    self.searchStatusLabel.adjustSize()
+                    self.searchAvatarlabel.setPixmap(QtGui.QPixmap(res[2]))
+                    self.searchAvatarlabel.setScaledContents(True)
+                    self.searchAvatarlabel.setVisible(True)
+                    self.searchNickLabel.setVisible(True)
+                    self.searchStatusLabel.setVisible(True)
+            else:
+                self.searchAvatarlabel.setVisible(False)
+                self.searchNickLabel.setVisible(False)
+                self.searchStatusLabel.setVisible(False)
+                self.addFriendButton.setVisible(False)
+        else:
+            self.searchAvatarlabel.setVisible(False)
+            self.searchNickLabel.setVisible(False)
+            self.searchStatusLabel.setVisible(False)
+            self.addFriendButton.setVisible(False)
+                    
+    def addFriend(self):
+        currentDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c.execute("INSERT INTO friendlist(playerID,friendID,DateAdded) VALUES(%s,%s,%s)",(userID,int(self.searchFriendLineEdit.text()),currentDate,))
+        self.searchFriendLineEdit.clear()
+        self.addFriendFrame.setVisible(False)
+    
+    
+    def globalUpdate(self):
+        if userID != None: 
+            self.update()
+            self.updateChat()
+            
     
 
