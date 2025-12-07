@@ -186,8 +186,8 @@ class Ui_Reg(object):
         global userID
         currentDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         c.execute("INSERT INTO player(nickname,level,winValue,looseValue,DateCreate,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,password) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(nickname,1,0,0,currentDate,0,0,"avatar.jpg",1,None,password,))
-        c.execute("LAST_INSERT_ID()")
-        userID = c.fetchone()
+        c.execute("SELECT LAST_INSERT_ID()")
+        userID = c.fetchone()[0]
         self.InitMain()
     
     def autorization(self):

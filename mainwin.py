@@ -18,6 +18,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(991, 686)
+        self.friendProfileID = 0
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.update_timer = QtCore.QTimer()
@@ -132,6 +133,9 @@ class Ui_MainWindow(object):
         self.profileFrame.setFrameShape(QtWidgets.QFrame.Shape.Panel)
         self.profileFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.profileFrame.setObjectName("profileFrame")
+        self.profileFrame.setStyleSheet("background-color: rgb(225, 225, 225);")
+
+        
         self.profileButton = QtWidgets.QPushButton(parent=self.profileFrame)
         self.profileButton.setGeometry(QtCore.QRect(10, 10, 61, 61))
         self.profileButton.setText("")
@@ -210,6 +214,13 @@ class Ui_MainWindow(object):
         self.frame_4.setFrameShape(QtWidgets.QFrame.Shape.Panel)
         self.frame_4.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.frame_4.setObjectName("frame_4")
+        self.frame_4.setStyleSheet("background-color: rgb(225, 225, 225);")
+        self.frame_main_layout = QtWidgets.QVBoxLayout(self.frame_4)
+        self.frame_main_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.frame_main_layout.setSpacing(5)
+        self.frame_main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        
+        
         self.comboBox = QtWidgets.QComboBox(parent=self.frame_4)
         self.comboBox.setGeometry(QtCore.QRect(10, 10, 191, 31))
         self.comboBox.setObjectName("comboBox")
@@ -280,6 +291,7 @@ class Ui_MainWindow(object):
         self.addFriendFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.addFriendFrame.setObjectName("addFriendFrame")
         self.addFriendFrame.setVisible(False)
+        self.addFriendFrame.setStyleSheet("background-color: rgb(225, 225, 225);")
         self.label_friend = QtWidgets.QLabel(parent=self.addFriendFrame)
         self.label_friend.setGeometry(QtCore.QRect(140, 10, 131, 16))
         font = QtGui.QFont()
@@ -459,6 +471,15 @@ class Ui_MainWindow(object):
         self.friendIDLabel = QtWidgets.QLabel(parent=self.tab_2)
         self.friendIDLabel.setGeometry(QtCore.QRect(370, 60, 71, 16))
         self.friendIDLabel.setObjectName("friendIDLabel")
+        self.addedFriendLabel = QtWidgets.QLabel(parent = self.tab_2)
+        self.addedFriendLabel.setGeometry(QtCore.QRect(440, 80, 71, 16))
+        self.addedFriendLabel.setObjectName("addedFriendLabel")
+        self.addedFriendLabel.setText("")
+        self.deleteFriendButton = QtWidgets.QPushButton(parent=self.tab_2)
+        self.deleteFriendButton.setGeometry(QtCore.QRect(440, 40, 25, 25))
+        self.deleteFriendButton.setObjectName("deleteFriendButton")
+        self.deleteFriendButton.setText("X")
+        self.deleteFriendButton.clicked.connect(self.deleteFriend)
         self.tabWidget.addTab(self.tab_2, "")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
@@ -472,6 +493,7 @@ class Ui_MainWindow(object):
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
         self.tabWidget.addTab(self.tab_6, "")
+        
         self.changeBackgroundButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.changeBackgroundButton.setGeometry(QtCore.QRect(780, 80, 191, 41))
         font = QtGui.QFont()
@@ -481,6 +503,7 @@ class Ui_MainWindow(object):
 "background-color: rgb(66, 199, 0);\n"
 "border-color: rgb(255, 255, 255);")
         self.changeBackgroundButton.setObjectName("changeBackgroundButton")
+        self.changeBackgroundButton.clicked.connect(self.setBackground)
         self.backgroundLabel.raise_()
         self.frame.raise_()
         self.profileFrame.raise_()
@@ -498,6 +521,7 @@ class Ui_MainWindow(object):
         self.chatWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.counter = 0
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -551,15 +575,20 @@ class Ui_MainWindow(object):
         
 
     def showMenu(self):
+        
         if not self.profileFrame.isVisible():
+            self.friendProfileID = 0
+            self.update()
             self.profileFrame.setVisible(True)
             self.chatWidget.setVisible(True)
             self.playButton.setVisible(True)
             self.frame_4.setVisible(True)
             self.tabWidget.setVisible(False)
             self.changeBackgroundButton.setVisible(False)
+            
     
     def showProfile(self):
+        
         if self.profileFrame.isVisible():
             self.profileFrame.setVisible(False)
             self.chatWidget.setVisible(False)
@@ -567,6 +596,19 @@ class Ui_MainWindow(object):
             self.frame_4.setVisible(False)
             self.tabWidget.setVisible(True)
             self.changeBackgroundButton.setVisible(True)
+            
+            
+    def showFriendProfile(self,fr_id):
+        
+        self.friendProfileID = fr_id
+        self.update()
+        if self.profileFrame.isVisible():
+            self.profileFrame.setVisible(False)
+            self.chatWidget.setVisible(False)
+            self.playButton.setVisible(False)
+            self.frame_4.setVisible(False)
+            self.tabWidget.setVisible(True)
+            
     
     def Init(self,uID):
         global userID
@@ -578,6 +620,103 @@ class Ui_MainWindow(object):
         self.frame_4.setVisible(True)
         self.frame.setEnabled(True)
         
+        # Получаем друзей
+        
+    
+    def add_friend_to_frame(self, friend_id, nickname, status_id, avatar_path):
+        """Добавляет элемент друга на фрейм"""
+        # Создаем виджет для друга
+        friend_widget = QtWidgets.QFrame()
+        friend_widget.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        friend_widget.setLineWidth(1)
+        friend_widget.setFixedHeight(60)
+        
+        
+        # Горизонтальный layout для элемента
+        friend_layout = QtWidgets.QHBoxLayout(friend_widget)
+        friend_layout.setContentsMargins(5, 5, 5, 5)
+        friend_layout.setSpacing(10)
+        
+        # 1. Квадратная кнопка с аватаром слева
+        avatar_button = QtWidgets.QPushButton()
+        avatar_button.setFixedSize(50, 50)
+        
+        # Загружаем аватар
+        
+        avatar_button.setIcon(QtGui.QIcon(avatar_path))
+        
+        
+        avatar_button.setIconSize(QtCore.QSize(45, 45))
+        
+        
+        # 2. Две надписи справа (в вертикальном layout)
+        labels_widget = QtWidgets.QWidget()
+        labels_layout = QtWidgets.QVBoxLayout(labels_widget)
+        labels_layout.setContentsMargins(0, 0, 0, 0)
+        labels_layout.setSpacing(2)
+        
+        # Никнейм (верхняя надпись)
+        nickname_label = QtWidgets.QLabel(nickname)
+       
+        
+        # Статус (нижняя надпись)
+        c.execute("SELECT Value FROM playerstatus WHERE ID = %s", (status_id,))
+        status_text = c.fetchone()[0]
+        status_label = QtWidgets.QLabel(status_text)
+        
+        
+        labels_layout.addWidget(nickname_label)
+        labels_layout.addWidget(status_label)
+        
+        # 3. Кнопка удаления друга (справа)
+        
+        # Сохраняем ID друга для удаления
+        # delete_button.setProperty("friend_id", friend_id)
+        # delete_button.clicked.connect(lambda checked, f_id=friend_id, w=friend_widget: self.remove_friend(f_id, w))
+        avatar_button.clicked.connect(lambda : self.showFriendProfile(friend_id))
+        # Собираем элемент
+        friend_layout.addWidget(avatar_button)
+        friend_layout.addWidget(labels_widget, 1)  
+        
+        
+
+        self.frame_main_layout.addWidget(friend_widget)
+    
+    
+    
+    def clear_frame(self):
+        """Полностью очищает фрейм с друзьями"""
+        
+        while self.frame_main_layout.count():
+            item = self.frame_main_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+    
+    def refresh_friends_list(self):
+        """Обновляет список друзей на фрейме"""
+       
+        self.clear_frame()
+        
+       
+        c.execute("SELECT friendID FROM friendlist WHERE playerID = %s",(userID,))
+        friends = c.fetchall()
+        
+        for friend in friends:
+            friend_id = friend[0]
+            c.execute("SELECT nickname, statusID, avatarPath FROM player WHERE ID = %s", (friend_id,))
+            friend_info = c.fetchone()
+            
+            if friend_info:
+                self.add_friend_to_frame(friend_id, friend_info[0], friend_info[1], friend_info[2])
+        
+    def deleteFriend(self):
+        reply = QtWidgets.QMessageBox.question(None,"Подтверждение","Вы уверены?",QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
+            c.execute("DELETE FROM friendlist WHERE playerID = %s AND friendID = %s",(userID,self.friendProfileID,))
+            c.execute("DELETE FROM friendlist WHERE playerID = %s AND friendID = %s",(self.friendProfileID,userID,))
+            self.showMenu()
+        
     def update(self):
         c.execute("SELECT nickname,winValue,looseValue,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,level,DateCreate FROM player WHERE ID = %s",(userID,))
         results = c.fetchone()
@@ -586,27 +725,18 @@ class Ui_MainWindow(object):
         icon7.addPixmap(QtGui.QPixmap(results[5]), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.profileButton.setIcon(icon7)
         self.profileButton.setIconSize(QtCore.QSize(52, 52))
-        self.profileButtonProfile.setIcon(icon7)
-        self.profileButtonProfile.setIconSize(QtCore.QSize(128,128))
-        
+
         self.matchesCountLabel.setText(str(int(results[1])+int(results[2])))
-        self.machesCountProfileLabel.setText(str(int(results[1])+int(results[2])))
+        
         self.winsCountLabel.setText(str(results[1]))
-        self.winsCountProfileLabel.setText(str(results[1]))
+        
         self.NicknameLabel.setText(results[0])
-        self.NicknameLabelProfile.setText(results[0])
         
         c.execute("SELECT Value FROM playerstatus WHERE ID = %s",(results[6],))
         status = c.fetchone()[0]
         
         self.StatusLabel.setText(status)
-        self.StatusLabelProfile.setText(status)
         
-        self.friendIDLabel.setText(f"FRIEND ID: {userID}")
-        self.levelLabel.setText(str(results[8]))
-        dt = results[9]
-        self.dateInGameLabel.setText(dt.strftime('%d.%m.%Y'))
-        self.mmrIcoLabel
         mmr = int(results[3])
         mmrIco = "noTitle.png"
         match mmr:
@@ -630,9 +760,95 @@ class Ui_MainWindow(object):
                 pass
         self.mmrIcoLabel.setPixmap(QtGui.QPixmap(mmrIco))
         self.mmrIcoLabel.setScaledContents(True)
-        self.mmrIcoProfileLabel.setPixmap(QtGui.QPixmap(mmrIco))
-        self.mmrIcoProfileLabel.setScaledContents(True)
-        self.updateChat()
+        
+        
+        
+        self.clear_frame()
+        c.execute("SELECT friendID FROM friendlist WHERE playerID = %s",(userID,))
+        friends = c.fetchall()
+
+        for friend in friends:
+            friend_id = friend[0]
+            
+            # Получаем информацию о друге
+            c.execute("SELECT nickname, statusID, avatarPath FROM player WHERE ID = %s", (friend_id,))
+            friend_info = c.fetchone()
+            
+            if friend_info:
+                self.add_friend_to_frame(friend_id, friend_info[0], friend_info[1], friend_info[2])
+        
+        if self.friendProfileID == 0:
+            self.deleteFriendButton.setVisible(False)
+            self.addedFriendLabel.setVisible(False)
+            self.mmrIcoProfileLabel.setPixmap(QtGui.QPixmap(mmrIco))
+            self.mmrIcoProfileLabel.setScaledContents(True)
+            if results[7] != None:
+                self.backgroundLabel.setPixmap(QtGui.QPixmap(results[7]))
+                self.backgroundLabel.setScaledContents(True)
+            else:
+                self.backgroundLabel.clear()
+            self.profileButtonProfile.setIcon(icon7)
+            self.profileButtonProfile.setIconSize(QtCore.QSize(128,128))
+            self.NicknameLabelProfile.setText(results[0])
+            self.machesCountProfileLabel.setText(str(int(results[1])+int(results[2])))
+            self.winsCountProfileLabel.setText(str(results[1]))
+            self.StatusLabelProfile.setText(status)
+            self.friendIDLabel.setText(f"FRIEND ID: {userID}")
+            self.levelLabel.setText(str(results[8]))
+            dt = results[9]
+            self.dateInGameLabel.setText(dt.strftime('%d.%m.%Y'))
+        
+        else:
+            c.execute("SELECT nickname,winValue,looseValue,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,level,DateCreate FROM player WHERE ID = %s",(self.friendProfileID,))
+            frResults = c.fetchone()
+            mmr = int(frResults[3])
+            mmrIco = "noTitle.png"
+            match mmr:
+                case r if r>=1 and r<=700:
+                    mmrIco = "recrut.png"
+                case r if r>=701 and r<=1400:
+                    mmrIco = "straj.png"
+                case r if r>=1401 and r<=2100:
+                    mmrIco = "ritchar.png"
+                case r if r>=2101 and r<=2950:
+                    mmrIco = "hero.png"
+                case r if r>=2951 and r<=3700:
+                    mmrIco = "legenda.png"
+                case r if r>=3701 and r<=4600:
+                    mmrIco = "vlastelin.png"
+                case r if r>=4601 and r<=5600:
+                    mmrIco = "god.png"
+                case r if r>5600:
+                    mmrIco = "tityan.png"
+                case _:
+                    pass
+            self.mmrIcoProfileLabel.setPixmap(QtGui.QPixmap(mmrIco))
+            self.mmrIcoProfileLabel.setScaledContents(True)
+            if frResults[7] != None:
+                self.backgroundLabel.setPixmap(QtGui.QPixmap(frResults[7]))
+                self.backgroundLabel.setScaledContents(True)
+            else:
+                self.backgroundLabel.clear()
+            icon10 = QtGui.QIcon()
+            icon10.addPixmap(QtGui.QPixmap(frResults[5]), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+            self.profileButtonProfile.setIcon(icon10)
+            self.profileButtonProfile.setIconSize(QtCore.QSize(128,128))
+            self.NicknameLabelProfile.setText(frResults[0])
+            self.machesCountProfileLabel.setText(str(int(frResults[1])+int(frResults[2])))
+            self.winsCountProfileLabel.setText(str(frResults[1]))
+            c.execute("SELECT Value FROM playerstatus WHERE ID = %s",(frResults[6],))
+            status = c.fetchone()[0]
+            self.StatusLabelProfile.setText(status)
+            self.friendIDLabel.setText(f"FRIEND ID: {self.friendProfileID}")
+            self.levelLabel.setText(str(frResults[8]))
+            dt = frResults[9]
+            self.dateInGameLabel.setText(dt.strftime('%d.%m.%Y'))
+            self.deleteFriendButton.setVisible(True)
+            self.addedFriendLabel.setVisible(True)
+            c.execute("SELECT DateAdded FROM friendlist WHERE playerID = %s AND friendID = %s",(userID,self.friendProfileID,))
+            self.addedFriendLabel.setText(f"Added to friendlist from {c.fetchone()[0].strftime('%d.%m.%Y')}")
+            self.addedFriendLabel.adjustSize()
+            
     def updateChat(self):
         self.chatTextEdit.clear()
         self.chatMessages.clear()
@@ -732,9 +948,23 @@ class Ui_MainWindow(object):
     def addFriend(self):
         currentDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         c.execute("INSERT INTO friendlist(playerID,friendID,DateAdded) VALUES(%s,%s,%s)",(userID,int(self.searchFriendLineEdit.text()),currentDate,))
+        c.execute("INSERT INTO friendlist(playerID,friendID,DateAdded) VALUES(%s,%s,%s)",(int(self.searchFriendLineEdit.text()),userID,currentDate,))
         self.searchFriendLineEdit.clear()
         self.addFriendFrame.setVisible(False)
+        self.refresh_friends_list()
     
+    def setBackground(self):
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self.centralwidget, "Выберите файл", "", "All Files (*)")
+
+        if file_path:
+            file_extension = os.path.splitext(file_path)[1].lower()
+            allowed_extensions = ['.png', '.jpg', '.jpeg']
+            if file_extension in allowed_extensions:
+                c.execute("UPDATE player SET backgroundPath = %s WHERE ID = %s",(file_path,userID,))
+            else:
+                QtWidgets.QMessageBox.warning(None,"Ошибка","Некоректный тип файла",QtWidgets.QMessageBox.StandardButton.Ok)
+        else:
+            print("Файл не был выбран")
     
     def globalUpdate(self):
         if userID != None: 
