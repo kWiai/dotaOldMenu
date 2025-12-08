@@ -12,6 +12,7 @@ from datetime import datetime
 import os
 userID = None
 authDate = None
+currentHeroID = 1
 
 class Ui_MainWindow(object):
     def __init__ (self):
@@ -73,6 +74,7 @@ class Ui_MainWindow(object):
         font.setFamily("W95FA")
         self.HeroesButton.setFont(font)
         self.HeroesButton.setObjectName("HeroesButton")
+        self.HeroesButton.clicked.connect(self.showHero)
         self.pushButton_6 = QtWidgets.QPushButton(parent=self.frame)
         self.pushButton_6.setGeometry(QtCore.QRect(280, 0, 81, 51))
         font = QtGui.QFont()
@@ -495,7 +497,235 @@ class Ui_MainWindow(object):
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
         self.tabWidget.addTab(self.tab_6, "")
-        
+        self.strangeLeftFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.strangeLeftFrame.setGeometry(QtCore.QRect(20, 90, 291, 171))
+        self.strangeLeftFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.strangeLeftFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.strangeLeftFrame.setObjectName("strangeLeftFrame")
+        self.strangeRightFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.strangeRightFrame.setGeometry(QtCore.QRect(330, 90, 291, 171))
+        self.strangeRightFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.strangeRightFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.strangeRightFrame.setObjectName("strangeRightFrame")
+        self.agilityLeftFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.agilityLeftFrame.setGeometry(QtCore.QRect(20, 280, 291, 171))
+        self.agilityLeftFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.agilityLeftFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.agilityLeftFrame.setObjectName("agilityLeftFrame")
+        self.agilityRightFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.agilityRightFrame.setGeometry(QtCore.QRect(330, 280, 291, 171))
+        self.agilityRightFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.agilityRightFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.agilityRightFrame.setObjectName("agilityRightFrame")
+        self.intLeftFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.intLeftFrame.setGeometry(QtCore.QRect(20, 470, 291, 171))
+        self.intLeftFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.intLeftFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.intLeftFrame.setObjectName("intLeftFrame")
+        self.intRightFrame = QtWidgets.QFrame(parent=self.centralwidget)
+        self.intRightFrame.setGeometry(QtCore.QRect(330, 470, 291, 171))
+        self.intRightFrame.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.intRightFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.intRightFrame.setObjectName("intRightFrame")
+        self.strl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.strl.setGeometry(QtCore.QRect(20, 70, 71, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.strl.setFont(font)
+        self.strl.setStyleSheet("color: rgb(170, 0, 0);")
+        self.strl.setObjectName("strl")
+        self.strr = QtWidgets.QLabel(parent=self.centralwidget)
+        self.strr.setGeometry(QtCore.QRect(330, 70, 71, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.strr.setFont(font)
+        self.strr.setStyleSheet("color: rgb(170, 0, 0);")
+        self.strr.setObjectName("strr")
+        self.agl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.agl.setGeometry(QtCore.QRect(20, 260, 71, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.agl.setFont(font)
+        self.agl.setStyleSheet("color: rgb(170, 0, 0);")
+        self.agl.setObjectName("agl")
+        self.agr = QtWidgets.QLabel(parent=self.centralwidget)
+        self.agr.setGeometry(QtCore.QRect(330, 260, 71, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.agr.setFont(font)
+        self.agr.setStyleSheet("color: rgb(170, 0, 0);")
+        self.agr.setObjectName("agr")
+        self.intr = QtWidgets.QLabel(parent=self.centralwidget)
+        self.intr.setGeometry(QtCore.QRect(330, 450, 81, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.intr.setFont(font)
+        self.intr.setStyleSheet("color: rgb(170, 0, 0);")
+        self.intr.setObjectName("intr")
+        self.intl = QtWidgets.QLabel(parent=self.centralwidget)
+        self.intl.setGeometry(QtCore.QRect(20, 450, 81, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.intl.setFont(font)
+        self.intl.setStyleSheet("color: rgb(170, 0, 0);")
+        self.intl.setObjectName("intl")
+        self.HeroTabWidget = QtWidgets.QTabWidget(parent=self.centralwidget)
+        self.HeroTabWidget.setGeometry(QtCore.QRect(630, 70, 351, 571))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.HeroTabWidget.setFont(font)
+        self.HeroTabWidget.setObjectName("HeroTabWidget")
+        self.SUMMARY = QtWidgets.QWidget()
+        self.SUMMARY.setObjectName("SUMMARY")
+        self.heroIcoLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.heroIcoLabel.setGeometry(QtCore.QRect(10, 10, 91, 51))
+        self.heroIcoLabel.setText("")
+        self.heroIcoLabel.setObjectName("heroIcoLabel")
+        self.heroNameLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.heroNameLabel.setGeometry(QtCore.QRect(120, 20, 111, 31))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        font.setPointSize(11)
+        self.heroNameLabel.setFont(font)
+        self.heroNameLabel.setObjectName("heroNameLabel")
+        self.sideLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.sideLabel.setGeometry(QtCore.QRect(10, 90, 49, 16))
+        self.sideLabel.setObjectName("sideLabel")
+        self.strIco = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.strIco.setGeometry(QtCore.QRect(10, 120, 61, 31))
+        self.strIco.setText("")
+        self.strIco.setPixmap(QtGui.QPixmap("Strength_attribute_symbol.png"))
+        self.strIco.setObjectName("strIco")
+        self.aglIco = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.aglIco.setGeometry(QtCore.QRect(10, 160, 61, 31))
+        self.aglIco.setText("")
+        self.aglIco.setPixmap(QtGui.QPixmap("Agility_attribute_symbol.png"))
+        self.aglIco.setScaledContents(False)
+        self.aglIco.setObjectName("aglIco")
+        self.intIco = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.intIco.setGeometry(QtCore.QRect(10, 200, 61, 31))
+        self.intIco.setText("")
+        self.intIco.setPixmap(QtGui.QPixmap("Intelligence_attribute_symbol.png"))
+        self.intIco.setObjectName("intIco")
+        self.strValueLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.strValueLabel.setGeometry(QtCore.QRect(80, 120, 61, 31))
+        self.strValueLabel.setObjectName("strValueLabel")
+        self.aglValueLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.aglValueLabel.setGeometry(QtCore.QRect(80, 160, 61, 31))
+        self.aglValueLabel.setObjectName("aglValueLabel")
+        self.intValueLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.intValueLabel.setGeometry(QtCore.QRect(80, 200, 61, 31))
+        self.intValueLabel.setObjectName("intValueLabel")
+        self.label_role = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.label_role.setGeometry(QtCore.QRect(10, 240, 49, 16))
+        self.label_role.setObjectName("label_role")
+        self.roleValueLabel = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.roleValueLabel.setGeometry(QtCore.QRect(10, 270, 49, 16))
+        self.roleValueLabel.setObjectName("roleValueLabel")
+        self.label_role_2 = QtWidgets.QLabel(parent=self.SUMMARY)
+        self.label_role_2.setGeometry(QtCore.QRect(10, 300, 49, 16))
+        self.label_role_2.setObjectName("label_role_2")
+        self.infoTextEdit = QtWidgets.QTextEdit(parent=self.SUMMARY)
+        self.infoTextEdit.setGeometry(QtCore.QRect(10, 330, 321, 201))
+        self.infoTextEdit.setReadOnly(True)
+        self.infoTextEdit.setObjectName("infoTextEdit")
+        self.HeroTabWidget.addTab(self.SUMMARY, "")
+        self.SKILS = QtWidgets.QWidget()
+        self.SKILS.setObjectName("SKILS")
+        self.HeroTabWidget.addTab(self.SKILS, "")
+        self.GUIDE = QtWidgets.QWidget()
+        self.GUIDE.setObjectName("GUIDE")
+        self.HeroTabWidget.addTab(self.GUIDE, "")
+        self.ADD_NEW_HERO = QtWidgets.QWidget()
+        self.ADD_NEW_HERO.setObjectName("ADD_NEW_HERO")
+        self.addIcoButton = QtWidgets.QPushButton(parent=self.ADD_NEW_HERO)
+        self.addIcoButton.setGeometry(QtCore.QRect(10, 10, 81, 51))
+        self.addIcoButton.setText("")
+        self.addIcoButton.setObjectName("addIcoButton")
+        self.heroNameLabelAdd = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroNameLabelAdd.setGeometry(QtCore.QRect(100, 10, 71, 16))
+        self.heroNameLabelAdd.setObjectName("heroNameLabelAdd")
+        self.heroNameLineEdit = QtWidgets.QLineEdit(parent=self.ADD_NEW_HERO)
+        self.heroNameLineEdit.setGeometry(QtCore.QRect(100, 40, 221, 22))
+        self.heroNameLineEdit.setObjectName("heroNameLineEdit")
+        self.heroDescriptionLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroDescriptionLabel.setGeometry(QtCore.QRect(10, 80, 91, 16))
+        self.heroDescriptionLabel.setObjectName("heroDescriptionLabel")
+        self.heroDescriptionTextEdit = QtWidgets.QTextEdit(parent=self.ADD_NEW_HERO)
+        self.heroDescriptionTextEdit.setGeometry(QtCore.QRect(10, 100, 321, 71))
+        self.heroDescriptionTextEdit.setObjectName("heroDescriptionTextEdit")
+        self.heroTypeLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroTypeLabel.setGeometry(QtCore.QRect(10, 180, 91, 21))
+        self.heroTypeLabel.setObjectName("heroTypeLabel")
+        self.typeComboBox = QtWidgets.QComboBox(parent=self.ADD_NEW_HERO)
+        self.typeComboBox.setGeometry(QtCore.QRect(100, 180, 221, 22))
+        self.typeComboBox.setObjectName("typeComboBox")
+        self.heroSideLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroSideLabel.setGeometry(QtCore.QRect(10, 210, 91, 21))
+        self.heroSideLabel.setObjectName("heroSideLabel")
+        self.sideComboBox = QtWidgets.QComboBox(parent=self.ADD_NEW_HERO)
+        self.sideComboBox.setGeometry(QtCore.QRect(100, 210, 221, 22))
+        self.sideComboBox.setObjectName("sideComboBox")
+        self.heroBaseStrLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroBaseStrLabel.setGeometry(QtCore.QRect(10, 250, 101, 21))
+        self.heroBaseStrLabel.setObjectName("heroBaseStrLabel")
+        self.baseStrSpinBox = QtWidgets.QSpinBox(parent=self.ADD_NEW_HERO)
+        self.baseStrSpinBox.setGeometry(QtCore.QRect(130, 250, 42, 22))
+        self.baseStrSpinBox.setObjectName("baseStrSpinBox")
+        self.baseAglSpinBox = QtWidgets.QSpinBox(parent=self.ADD_NEW_HERO)
+        self.baseAglSpinBox.setGeometry(QtCore.QRect(130, 280, 42, 22))
+        self.baseAglSpinBox.setObjectName("baseAglSpinBox")
+        self.heroBaseAglLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroBaseAglLabel.setGeometry(QtCore.QRect(10, 280, 101, 21))
+        self.heroBaseAglLabel.setObjectName("heroBaseAglLabel")
+        self.baseIntSpinBox = QtWidgets.QSpinBox(parent=self.ADD_NEW_HERO)
+        self.baseIntSpinBox.setGeometry(QtCore.QRect(130, 310, 42, 22))
+        self.baseIntSpinBox.setObjectName("baseIntSpinBox")
+        self.heroBaseIntLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroBaseIntLabel.setGeometry(QtCore.QRect(10, 310, 121, 21))
+        self.heroBaseIntLabel.setObjectName("heroBaseIntLabel")
+        self.heroGainStrLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroGainStrLabel.setGeometry(QtCore.QRect(180, 250, 101, 21))
+        self.heroGainStrLabel.setObjectName("heroGainStrLabel")
+        self.StrDoubleSpinBox = QtWidgets.QDoubleSpinBox(parent=self.ADD_NEW_HERO)
+        self.StrDoubleSpinBox.setGeometry(QtCore.QRect(300, 250, 41, 22))
+        self.StrDoubleSpinBox.setDecimals(1)
+        self.StrDoubleSpinBox.setObjectName("StrDoubleSpinBox")
+        self.AglDoubleSpinBox = QtWidgets.QDoubleSpinBox(parent=self.ADD_NEW_HERO)
+        self.AglDoubleSpinBox.setGeometry(QtCore.QRect(300, 280, 41, 22))
+        self.AglDoubleSpinBox.setDecimals(1)
+        self.AglDoubleSpinBox.setObjectName("AglDoubleSpinBox")
+        self.heroGainAglLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroGainAglLabel.setGeometry(QtCore.QRect(180, 280, 101, 21))
+        self.heroGainAglLabel.setObjectName("heroGainAglLabel")
+        self.IntDoubleSpinBox = QtWidgets.QDoubleSpinBox(parent=self.ADD_NEW_HERO)
+        self.IntDoubleSpinBox.setGeometry(QtCore.QRect(300, 310, 41, 22))
+        self.IntDoubleSpinBox.setDecimals(1)
+        self.IntDoubleSpinBox.setObjectName("IntDoubleSpinBox")
+        self.heroGainIntLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroGainIntLabel.setGeometry(QtCore.QRect(180, 310, 111, 21))
+        self.heroGainIntLabel.setObjectName("heroGainIntLabel")
+        self.heroRolesLabel = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
+        self.heroRolesLabel.setGeometry(QtCore.QRect(10, 340, 91, 21))
+        self.heroRolesLabel.setObjectName("heroRolesLabel")
+        self.rolesTableWidget = QtWidgets.QTableWidget(parent=self.ADD_NEW_HERO)
+        self.rolesTableWidget.setGeometry(QtCore.QRect(10, 370, 141, 161))
+        self.rolesTableWidget.setObjectName("rolesTableWidget")
+        self.rolesTableWidget.setColumnCount(0)
+        self.rolesTableWidget.setRowCount(0)
+        self.addNewHeroButton = QtWidgets.QPushButton(parent=self.ADD_NEW_HERO)
+        self.addNewHeroButton.setGeometry(QtCore.QRect(170, 370, 161, 51))
+        self.addNewHeroButton.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(69, 208, 0);")
+        self.addNewHeroButton.setObjectName("addNewHeroButton")
+        self.HeroTabWidget.addTab(self.ADD_NEW_HERO, "")
+        self.aboutHeroLabel = QtWidgets.QLabel(parent=self.centralwidget)
+        self.aboutHeroLabel.setGeometry(QtCore.QRect(770, 50, 71, 16))
+        font = QtGui.QFont()
+        font.setFamily("W95FA")
+        self.aboutHeroLabel.setFont(font)
+        self.aboutHeroLabel.setStyleSheet("color: rgb(170, 0, 0);")
+        self.aboutHeroLabel.setObjectName("aboutHeroLabel")
         self.changeBackgroundButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.changeBackgroundButton.setGeometry(QtCore.QRect(780, 80, 191, 41))
         font = QtGui.QFont()
@@ -506,6 +736,30 @@ class Ui_MainWindow(object):
 "border-color: rgb(255, 255, 255);")
         self.changeBackgroundButton.setObjectName("changeBackgroundButton")
         self.changeBackgroundButton.clicked.connect(self.setBackground)
+        self.strl_layout = QtWidgets.QVBoxLayout(self.strangeLeftFrame)
+        self.strl_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.strl_layout.setSpacing(5)
+        self.strl_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.strr_layout = QtWidgets.QVBoxLayout(self.strangeRightFrame)
+        self.strr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.strr_layout.setSpacing(5)
+        self.strr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.agill_layout = QtWidgets.QVBoxLayout(self.agilityLeftFrame)
+        self.agill_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.agill_layout.setSpacing(5)
+        self.agill_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.agilr_layout = QtWidgets.QVBoxLayout(self.agilityRightFrame)
+        self.agilr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.agilr_layout.setSpacing(5)
+        self.agilr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.intl_layout = QtWidgets.QVBoxLayout(self.intLeftFrame)
+        self.intl_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.intl_layout.setSpacing(5)
+        self.intl_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.intr_layout = QtWidgets.QVBoxLayout(self.intRightFrame)
+        self.intr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.intr_layout.setSpacing(5)
+        self.intr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         self.backgroundLabel.raise_()
         self.frame.raise_()
         self.profileFrame.raise_()
@@ -574,6 +828,65 @@ class Ui_MainWindow(object):
         self.playButton.setVisible(False)
         self.frame_4.setVisible(False)
         self.frame.setEnabled(False)
+        self.strl.setText(_translate("MainWindow", "STRANGE"))
+        self.strr.setText(_translate("MainWindow", "STRANGE"))
+        self.agl.setText(_translate("MainWindow", "AGILITY"))
+        self.agr.setText(_translate("MainWindow", "AGILITY"))
+        self.intr.setText(_translate("MainWindow", "INTELLIGENCE"))
+        self.intl.setText(_translate("MainWindow", "INTELLIGENCE"))
+        self.heroNameLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.sideLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.strValueLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.aglValueLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.intValueLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.label_role.setText(_translate("MainWindow", "Role:"))
+        self.roleValueLabel.setText(_translate("MainWindow", "TextLabel"))
+        self.label_role_2.setText(_translate("MainWindow", "About:"))
+        self.HeroTabWidget.setTabText(self.HeroTabWidget.indexOf(self.SUMMARY), _translate("MainWindow", "SUMMARY"))
+        self.HeroTabWidget.setTabText(self.HeroTabWidget.indexOf(self.SKILS), _translate("MainWindow", "SKILS"))
+        self.HeroTabWidget.setTabText(self.HeroTabWidget.indexOf(self.GUIDE), _translate("MainWindow", "GUIDE"))
+        self.heroNameLabelAdd.setText(_translate("MainWindow", "Hero\'s name:"))
+        self.heroDescriptionLabel.setText(_translate("MainWindow", "Hero\'s description:"))
+        self.heroTypeLabel.setText(_translate("MainWindow", "Hero\'s main type:"))
+        self.heroSideLabel.setText(_translate("MainWindow", "Hero\'s main type:"))
+        self.heroBaseStrLabel.setText(_translate("MainWindow", "Hero\'s basic strength:"))
+        self.heroBaseAglLabel.setText(_translate("MainWindow", "Hero\'s basic agility:"))
+        self.heroBaseIntLabel.setText(_translate("MainWindow", "Hero\'s basic intelligence:"))
+        self.heroGainStrLabel.setText(_translate("MainWindow", "Hero\'s strength gain:"))
+        self.heroGainAglLabel.setText(_translate("MainWindow", "Hero\'s agility gain:"))
+        self.heroGainIntLabel.setText(_translate("MainWindow", "Hero\'s intelligence gain:"))
+        self.heroRolesLabel.setText(_translate("MainWindow", "Hero\'s roles:"))
+        self.addNewHeroButton.setText(_translate("MainWindow", "ADD NEW HERO"))
+        self.HeroTabWidget.setTabText(self.HeroTabWidget.indexOf(self.ADD_NEW_HERO), _translate("MainWindow", "ADD NEW HERO"))
+        self.aboutHeroLabel.setText(_translate("MainWindow", "STRANGE"))
+        self.strl.setVisible(False)
+        self.strr.setVisible(False)
+        self.intl.setVisible(False)
+        self.intr.setVisible(False)
+        self.agl.setVisible(False)
+        self.agr.setVisible(False)
+        self.aboutHeroLabel.setVisible(False)
+        self.HeroTabWidget.setVisible(False)
+        self.strangeLeftFrame.setVisible(False)
+        self.strangeRightFrame.setVisible(False)
+        self.agilityLeftFrame.setVisible(False)
+        self.agilityRightFrame.setVisible(False)
+        self.intLeftFrame.setVisible(False)
+        self.intRightFrame.setVisible(False)
+        self.strl.raise_()
+        self.strr.raise_()
+        self.intl.raise_()
+        self.intr.raise_()
+        self.agl.raise_()
+        self.agr.raise_()
+        self.aboutHeroLabel.raise_()
+        self.HeroTabWidget.raise_()
+        self.strangeLeftFrame.raise_()
+        self.strangeRightFrame.raise_()
+        self.agilityLeftFrame.raise_()
+        self.agilityRightFrame.raise_()
+        self.intLeftFrame.raise_()
+        self.intRightFrame.raise_()
         
 
     def showMenu(self):
@@ -587,6 +900,21 @@ class Ui_MainWindow(object):
             self.frame_4.setVisible(True)
             self.tabWidget.setVisible(False)
             self.changeBackgroundButton.setVisible(False)
+            self.strl.setVisible(False)
+            self.strr.setVisible(False)
+            self.intl.setVisible(False)
+            self.intr.setVisible(False)
+            self.agl.setVisible(False)
+            self.agr.setVisible(False)
+            self.aboutHeroLabel.setVisible(False)
+            self.HeroTabWidget.setVisible(False)
+            self.strangeLeftFrame.setVisible(False)
+            self.strangeRightFrame.setVisible(False)
+            self.agilityLeftFrame.setVisible(False)
+            self.agilityRightFrame.setVisible(False)
+            self.intLeftFrame.setVisible(False)
+            self.intRightFrame.setVisible(False)
+        
             
     
     def showProfile(self):
@@ -599,7 +927,29 @@ class Ui_MainWindow(object):
             self.tabWidget.setVisible(True)
             self.changeBackgroundButton.setVisible(True)
             
-            
+    def showHero(self):
+        if not self.strl.isVisible():
+            self.profileFrame.setVisible(False)
+            self.chatWidget.setVisible(False)
+            self.playButton.setVisible(False)
+            self.frame_4.setVisible(False)
+            self.tabWidget.setVisible(False)
+            self.changeBackgroundButton.setVisible(False)
+            self.strl.setVisible(True)
+            self.strr.setVisible(True)
+            self.intl.setVisible(True)
+            self.intr.setVisible(True)
+            self.agl.setVisible(True)
+            self.agr.setVisible(True)
+            self.aboutHeroLabel.setVisible(True)
+            self.HeroTabWidget.setVisible(True)
+            self.strangeLeftFrame.setVisible(True)
+            self.strangeRightFrame.setVisible(True)
+            self.agilityLeftFrame.setVisible(True)
+            self.agilityRightFrame.setVisible(True)
+            self.intLeftFrame.setVisible(True)
+            self.intRightFrame.setVisible(True)
+    
     def showFriendProfile(self,fr_id):
         
         self.friendProfileID = fr_id
@@ -624,29 +974,198 @@ class Ui_MainWindow(object):
         self.playButton.setVisible(True)
         self.frame_4.setVisible(True)
         self.frame.setEnabled(True)
+        self.InitHeroDescription()
+        self.InitHeroTables()
         
-        # Получаем друзей
+    def InitHeroDescription(self):
+        c.execute("SELECT name,description,sideID,typeID,picturePath,baseStrange,baseAgility,baseIntelect,strUpValue,agilUpValue,intUpValue FROM heroes WHERE ID = %s",(currentHeroID,))
+        results = c.fetchone()
+        c.execute("SELECT roleID FROM herorolelist WHERE heroID = %s",(currentHeroID,))
+        roles = c.fetchall()
+        if results[4] != None:
+            self.heroIcoLabel.setPixmap(QtGui.QPixmap(results[4]))
+            self.heroIcoLabel.setScaledContents(True)
+        self.heroNameLabel.setText(results[0])
+        self.heroNameLabel.adjustSize()
+        self.strValueLabel.setText(f"{results[5]} + {results[8]}")
+        self.aglValueLabel.setText(f"{results[6]} + {results[9]}")
+        self.intValueLabel.setText(f"{results[7]} + {results[10]}")
+        self.strValueLabel.adjustSize()
+        self.aglValueLabel.adjustSize()
+        self.intValueLabel.adjustSize()
+        rolestr = ""
+        for role in roles:
+            c.execute("SELECT Value FROM role WHERE ID = %s",(role[0],))
+            rolestr+= f"{c.fetchone()[0]}, "
+        rolestr = rolestr[0:-2:1]
+        self.roleValueLabel.setText(rolestr)
+        self.roleValueLabel.adjustSize()
+        self.infoTextEdit.clear()
+        self.infoTextEdit.append(results[1])
         
-    
+    def InitHeroTables(self):
+    # Очищаем все layout
+        self.clear_hero_layouts()
+        
+        # Настраиваем выравнивание для всех layout
+        for layout in [self.strl_layout, self.strr_layout, self.agill_layout, 
+                    self.agilr_layout, self.intl_layout, self.intr_layout]:
+            layout.setSpacing(2)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignLeft)
+        
+        c.execute("SELECT ID,picturePath,sideID,typeID FROM heroes")
+        results = c.fetchall()
+        
+        # Группируем героев
+        categories = {
+            'strleft': [], 'strright': [],
+            'agilleft': [], 'agilright': [],
+            'intleft': [], 'intright': []
+        }
+        
+        for res in results:
+            hero_id, pic_path, side_id, type_id = res
+            
+            if side_id == 1 and type_id == 1:
+                categories['strleft'].append([hero_id, pic_path])
+            elif side_id == 2 and type_id == 1:
+                categories['strright'].append([hero_id, pic_path])
+            elif side_id == 1 and type_id == 2:
+                categories['agilleft'].append([hero_id, pic_path])
+            elif side_id == 2 and type_id == 2:
+                categories['agilright'].append([hero_id, pic_path])
+            elif side_id == 1 and type_id == 3:
+                categories['intleft'].append([hero_id, pic_path])
+            elif side_id == 2 and type_id == 3:
+                categories['intright'].append([hero_id, pic_path])
+        
+        # Добавляем героев в layout
+        for category_name, hero_list in categories.items():
+            layout_map = {
+                'strleft': self.strl_layout,
+                'strright': self.strr_layout,
+                'agilleft': self.agill_layout,
+                'agilright': self.agilr_layout,
+                'intleft': self.intl_layout,
+                'intright': self.intr_layout
+            }
+            
+            layout = layout_map[category_name]
+            self.add_heroes_to_layout_simple(hero_list, layout)
+
+    def add_heroes_to_layout_simple(self, hero_list, layout):
+        """Простая версия добавления героев с выравниванием в левом верхнем углу"""
+        if not hero_list:
+            return
+        
+        # Уменьшенные размеры кнопки
+        button_width = 80
+        button_height = 60
+        buttons_per_row = 3  # 291px / 80px ≈ 3 кнопки в строке
+        
+        # Создаем виджет-контейнер с GridLayout
+        container = QtWidgets.QWidget()
+        grid_layout = QtWidgets.QGridLayout(container)
+        grid_layout.setSpacing(2)
+        grid_layout.setContentsMargins(0, 0, 0, 0)
+        
+        row = 0
+        col = 0
+        
+        for hero in hero_list:
+            # Создаем кнопку
+            hero_button = QtWidgets.QPushButton()
+            hero_button.setFixedSize(button_width, button_height)
+            
+            # Стиль без рамок
+            hero_button.setStyleSheet("""
+                QPushButton {
+                    border: none;
+                    padding: 0px;
+                    background-color: transparent;
+                }
+                QPushButton:hover {
+                    border: 2px solid #ff6600;
+                }
+            """)
+            
+            # Загружаем иконку
+            if hero[1] and os.path.exists(hero[1]):
+                try:
+                    pixmap = QtGui.QPixmap(hero[1])
+                    # Масштабируем изображение
+                    scaled_pixmap = pixmap.scaled(
+                        button_width, 
+                        button_height,
+                        QtCore.Qt.AspectRatioMode.KeepAspectRatio,
+                        QtCore.Qt.TransformationMode.SmoothTransformation
+                    )
+                    
+                    # Создаем кнопку с иконкой, которая полностью заполняет кнопку
+                    hero_button.setIcon(QtGui.QIcon(scaled_pixmap))
+                    hero_button.setIconSize(QtCore.QSize(button_width, button_height))
+                except:
+                    hero_button.setText(str(hero[0]))
+            else:
+                hero_button.setText(str(hero[0]))
+            
+            # Подключаем клик
+            hero_button.clicked.connect(lambda checked, hid=hero[0]: self.changeHeroID(hid))
+            
+            # Добавляем в grid
+            grid_layout.addWidget(hero_button, row, col)
+            
+            # Обновляем позицию
+            col += 1
+            if col >= buttons_per_row:
+                col = 0
+                row += 1
+        
+        # Добавляем контейнер в основной layout
+        layout.addWidget(container)
+    def clear_layout(self, layout):
+        """Очищает layout от всех виджетов"""
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+    def clear_hero_layouts(self):
+        """Очищает все layout с героями"""
+        layouts = [
+            self.strl_layout, self.strr_layout,
+            self.agill_layout, self.agilr_layout,
+            self.intl_layout, self.intr_layout
+        ]
+        
+        for layout in layouts:
+            self.clear_layout(layout)
+  
+    def changeHeroID(self,hid):
+        global currentHeroID
+        currentHeroID = int(hid)
+        
     def add_friend_to_frame(self, friend_id, nickname, status_id, avatar_path):
         """Добавляет элемент друга на фрейм"""
-        # Создаем виджет для друга
+        
         friend_widget = QtWidgets.QFrame()
         friend_widget.setFrameShape(QtWidgets.QFrame.Shape.Box)
         friend_widget.setLineWidth(1)
         friend_widget.setFixedHeight(60)
         
         
-        # Горизонтальный layout для элемента
+        
         friend_layout = QtWidgets.QHBoxLayout(friend_widget)
         friend_layout.setContentsMargins(5, 5, 5, 5)
         friend_layout.setSpacing(10)
         
-        # 1. Квадратная кнопка с аватаром слева
+        
         avatar_button = QtWidgets.QPushButton()
         avatar_button.setFixedSize(50, 50)
         
-        # Загружаем аватар
+        
         
         avatar_button.setIcon(QtGui.QIcon(avatar_path))
         
@@ -654,17 +1173,17 @@ class Ui_MainWindow(object):
         avatar_button.setIconSize(QtCore.QSize(45, 45))
         
         
-        # 2. Две надписи справа (в вертикальном layout)
+        
         labels_widget = QtWidgets.QWidget()
         labels_layout = QtWidgets.QVBoxLayout(labels_widget)
         labels_layout.setContentsMargins(0, 0, 0, 0)
         labels_layout.setSpacing(2)
         
-        # Никнейм (верхняя надпись)
+        
         nickname_label = QtWidgets.QLabel(nickname)
        
         
-        # Статус (нижняя надпись)
+        
         c.execute("SELECT Value FROM playerstatus WHERE ID = %s", (status_id,))
         status_text = c.fetchone()[0]
         status_label = QtWidgets.QLabel(status_text)
@@ -673,13 +1192,11 @@ class Ui_MainWindow(object):
         labels_layout.addWidget(nickname_label)
         labels_layout.addWidget(status_label)
         
-        # 3. Кнопка удаления друга (справа)
         
-        # Сохраняем ID друга для удаления
-        # delete_button.setProperty("friend_id", friend_id)
-        # delete_button.clicked.connect(lambda checked, f_id=friend_id, w=friend_widget: self.remove_friend(f_id, w))
+        
+        
         avatar_button.clicked.connect(lambda : self.showFriendProfile(friend_id))
-        # Собираем элемент
+        
         friend_layout.addWidget(avatar_button)
         friend_layout.addWidget(labels_widget, 1)  
         

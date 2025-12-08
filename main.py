@@ -204,7 +204,7 @@ class Ui_Reg(object):
                     mg.warning(None,"Ошибка","Введите пароль",mg.StandardButton.Ok)
                 else:
                     reply = mg.question(None,"Подтверждение","Вы уверены?",QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
-                    if reply == mg.StandardButton.Yes:
+                    if reply == mg.StandardButton.Yes:  
                         self.registration(nickname,password)
             elif password == dbPassword[0]:
                 userID = dbPassword[1]
