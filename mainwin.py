@@ -11,6 +11,7 @@ from connector import c,db
 from datetime import datetime
 import os
 userID = None
+authDate = None
 
 class Ui_MainWindow(object):
     def __init__ (self):
@@ -18,6 +19,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(991, 686)
+        MainWindow.closeEvent = self.closeEvent
         self.friendProfileID = 0
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -613,6 +615,9 @@ class Ui_MainWindow(object):
     def Init(self,uID):
         global userID
         userID = uID
+        global authDate
+        authDate = datetime.now()
+        c.execute("UPDATE player SET statusID = 1 WHERE ID = %s",(userID,))
         self.update()
         self.profileFrame.setVisible(True)
         self.chatWidget.setVisible(True)
@@ -852,7 +857,7 @@ class Ui_MainWindow(object):
     def updateChat(self):
         self.chatTextEdit.clear()
         self.chatMessages.clear()
-        c.execute("SELECT CONCAT(player.nickname,' at ', playerchat.DateSend, ' ', playerchat.text) FROM playerchat INNER JOIN player ON playerchat.playerID = player.ID ORDER BY playerchat.DateSend")
+        c.execute("SELECT CONCAT(player.nickname,' at ', playerchat.DateSend, ' ', playerchat.text) FROM playerchat INNER JOIN player ON playerchat.playerID = player.ID WHERE playerchat.DateSend > %s ORDER BY playerchat.DateSend",(authDate,))
         messages = c.fetchall()
         c.execute("SELECT nickname FROM player")
         nicks = c.fetchall()
@@ -971,5 +976,7 @@ class Ui_MainWindow(object):
             self.update()
             self.updateChat()
             
-    
+    def closeEvent(self, event):
+        c.execute("UPDATE player SET statusID = 5 WHERE ID = %s",(userID,))
+        event.accept()
 
