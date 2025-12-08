@@ -13,6 +13,7 @@ import os
 userID = None
 authDate = None
 currentHeroID = 1
+heroImgPath = None
 
 class Ui_MainWindow(object):
     def __init__ (self):
@@ -394,14 +395,17 @@ class Ui_MainWindow(object):
         self.favouriteButton1Profile.setGeometry(QtCore.QRect(150, 90, 71, 51))
         self.favouriteButton1Profile.setText("")
         self.favouriteButton1Profile.setObjectName("favouriteButton1Profile")
+        self.favouriteButton1Profile.clicked.connect(lambda: self.setFavourite(1))
         self.favouriteButton2Profile = QtWidgets.QPushButton(parent=self.tab_2)
         self.favouriteButton2Profile.setGeometry(QtCore.QRect(230, 90, 71, 51))
         self.favouriteButton2Profile.setText("")
         self.favouriteButton2Profile.setObjectName("favouriteButton2Profile")
-        self.favoriteButton3Profile = QtWidgets.QPushButton(parent=self.tab_2)
-        self.favoriteButton3Profile.setGeometry(QtCore.QRect(310, 90, 71, 51))
-        self.favoriteButton3Profile.setText("")
-        self.favoriteButton3Profile.setObjectName("favoriteButton3Profile")
+        self.favouriteButton2Profile.clicked.connect(lambda: self.setFavourite(2))
+        self.favouriteButton3Profile = QtWidgets.QPushButton(parent=self.tab_2)
+        self.favouriteButton3Profile.setGeometry(QtCore.QRect(310, 90, 71, 51))
+        self.favouriteButton3Profile.setText("")
+        self.favouriteButton3Profile.setObjectName("favoriteButton3Profile")
+        self.favouriteButton3Profile.clicked.connect(lambda: self.setFavourite(3))
         self.frame_6 = QtWidgets.QFrame(parent=self.tab_2)
         self.frame_6.setGeometry(QtCore.QRect(130, 150, 261, 81))
         self.frame_6.setFrameShape(QtWidgets.QFrame.Shape.VLine)
@@ -642,6 +646,7 @@ class Ui_MainWindow(object):
         self.addIcoButton.setGeometry(QtCore.QRect(10, 10, 81, 51))
         self.addIcoButton.setText("")
         self.addIcoButton.setObjectName("addIcoButton")
+        self.addIcoButton.clicked.connect(self.changeHeroIco)
         self.heroNameLabelAdd = QtWidgets.QLabel(parent=self.ADD_NEW_HERO)
         self.heroNameLabelAdd.setGeometry(QtCore.QRect(100, 10, 71, 16))
         self.heroNameLabelAdd.setObjectName("heroNameLabelAdd")
@@ -713,6 +718,9 @@ class Ui_MainWindow(object):
         self.rolesTableWidget.setObjectName("rolesTableWidget")
         self.rolesTableWidget.setColumnCount(0)
         self.rolesTableWidget.setRowCount(0)
+        self.rolesTableWidget.setColumnCount(2)
+        self.rolesTableWidget.verticalHeader().setVisible(False)
+        self.rolesTableWidget.horizontalHeader().setVisible(False)
         self.addNewHeroButton = QtWidgets.QPushButton(parent=self.ADD_NEW_HERO)
         self.addNewHeroButton.setGeometry(QtCore.QRect(170, 370, 161, 51))
         self.addNewHeroButton.setStyleSheet("color: rgb(255, 255, 255);\n"
@@ -848,7 +856,7 @@ class Ui_MainWindow(object):
         self.heroNameLabelAdd.setText(_translate("MainWindow", "Hero\'s name:"))
         self.heroDescriptionLabel.setText(_translate("MainWindow", "Hero\'s description:"))
         self.heroTypeLabel.setText(_translate("MainWindow", "Hero\'s main type:"))
-        self.heroSideLabel.setText(_translate("MainWindow", "Hero\'s main type:"))
+        self.heroSideLabel.setText(_translate("MainWindow", "Hero\'s main side:"))
         self.heroBaseStrLabel.setText(_translate("MainWindow", "Hero\'s basic strength:"))
         self.heroBaseAglLabel.setText(_translate("MainWindow", "Hero\'s basic agility:"))
         self.heroBaseIntLabel.setText(_translate("MainWindow", "Hero\'s basic intelligence:"))
@@ -857,8 +865,9 @@ class Ui_MainWindow(object):
         self.heroGainIntLabel.setText(_translate("MainWindow", "Hero\'s intelligence gain:"))
         self.heroRolesLabel.setText(_translate("MainWindow", "Hero\'s roles:"))
         self.addNewHeroButton.setText(_translate("MainWindow", "ADD NEW HERO"))
+        self.addNewHeroButton.clicked.connect(self.addNewHero)
         self.HeroTabWidget.setTabText(self.HeroTabWidget.indexOf(self.ADD_NEW_HERO), _translate("MainWindow", "ADD NEW HERO"))
-        self.aboutHeroLabel.setText(_translate("MainWindow", "STRANGE"))
+        self.aboutHeroLabel.setText(_translate("MainWindow", "ABOUT HERO: "))
         self.strl.setVisible(False)
         self.strr.setVisible(False)
         self.intl.setVisible(False)
@@ -887,7 +896,18 @@ class Ui_MainWindow(object):
         self.agilityRightFrame.raise_()
         self.intLeftFrame.raise_()
         self.intRightFrame.raise_()
-        
+        c.execute("SELECT ID,Value FROM type")
+        types = c.fetchall()
+        self.typeComboBox.addItem("",userData = None)
+        for type in types:
+            self.typeComboBox.addItem(type[1],userData = type[0])
+            
+        c.execute("SELECT ID,Value FROM side")
+        sides = c.fetchall()
+        self.sideComboBox.addItem("",userData = None)
+        for side in sides:
+            self.sideComboBox.addItem(side[1],userData = side[0])
+            
 
     def showMenu(self):
         
@@ -916,7 +936,31 @@ class Ui_MainWindow(object):
             self.intRightFrame.setVisible(False)
         
             
-    
+    def initRolesTable(self):
+        c.execute("SELECT Value FROM role")
+        roles = c.fetchall()
+        self.rolesTableWidget.setRowCount(len(roles))
+        
+        
+        
+        for i in range(len(roles)):
+            role_name = str(roles[i][0])
+            item = QtWidgets.QTableWidgetItem(role_name)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
+            self.rolesTableWidget.setItem(i, 1, item)
+            
+            checkbox = QtWidgets.QCheckBox()
+
+            
+            widget = QtWidgets.QWidget()
+            layout = QtWidgets.QHBoxLayout(widget)
+            layout.addWidget(checkbox)
+            layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            layout.setContentsMargins(0, 0, 0, 0)
+            self.rolesTableWidget.setCellWidget(i, 0, widget)
+        
+        self.rolesTableWidget.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        self.rolesTableWidget.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
     def showProfile(self):
         
         if self.profileFrame.isVisible():
@@ -960,8 +1004,23 @@ class Ui_MainWindow(object):
             self.playButton.setVisible(False)
             self.frame_4.setVisible(False)
             self.tabWidget.setVisible(True)
-            
-    
+    def setFavourite(self,slot):
+        if self.friendProfileID == 0:
+            print(slot)
+    def changeHeroIco(self):
+        global heroImgPath
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self.centralwidget, "Выберите файл", "", "All Files (*)")
+
+        if file_path:
+            file_extension = os.path.splitext(file_path)[1].lower()
+            allowed_extensions = ['.png', '.jpg', '.jpeg']
+            if file_extension in allowed_extensions:
+                heroImgPath = file_path
+            else:
+                QtWidgets.QMessageBox.warning(None,"Ошибка","Некоректный тип файла",QtWidgets.QMessageBox.StandardButton.Ok)
+        else:
+            print("Файл не был выбран")
+        
     def Init(self,uID):
         global userID
         userID = uID
@@ -976,6 +1035,7 @@ class Ui_MainWindow(object):
         self.frame.setEnabled(True)
         self.InitHeroDescription()
         self.InitHeroTables()
+        self.initRolesTable()
         
     def InitHeroDescription(self):
         c.execute("SELECT name,description,sideID,typeID,picturePath,baseStrange,baseAgility,baseIntelect,strUpValue,agilUpValue,intUpValue FROM heroes WHERE ID = %s",(currentHeroID,))
@@ -996,7 +1056,7 @@ class Ui_MainWindow(object):
         rolestr = ""
         for role in roles:
             c.execute("SELECT Value FROM role WHERE ID = %s",(role[0],))
-            rolestr+= f"{c.fetchone()[0]}, "
+            rolestr += f"{c.fetchone()[0]}, "
         rolestr = rolestr[0:-2:1]
         self.roleValueLabel.setText(rolestr)
         self.roleValueLabel.adjustSize()
@@ -1146,7 +1206,56 @@ class Ui_MainWindow(object):
     def changeHeroID(self,hid):
         global currentHeroID
         currentHeroID = int(hid)
+        self.InitHeroDescription()
+    
+    def addNewHero(self):
+        global heroImgPath
+        name = self.heroNameLineEdit.text()
+        description = self.heroDescriptionTextEdit.toPlainText()
+        heroType = self.typeComboBox.currentData()
+        heroSide = self.sideComboBox.currentData()
+        baseStrange = self.baseStrSpinBox.value()
+        baseAgility = self.baseAglSpinBox.value()
+        baseIntelligence = self.baseIntSpinBox.value()
+        upStr = self.StrDoubleSpinBox.value()
+        upAgl = self.AglDoubleSpinBox.value()
+        upInt = self.IntDoubleSpinBox.value()
+        tableRowCount = self.rolesTableWidget.rowCount()
+        roles = []
+        for i in range(tableRowCount):
+            widget = self.rolesTableWidget.cellWidget(i, 0)
+            if widget is not None:
+                checkbox = widget.findChild(QtWidgets.QCheckBox)
+                if checkbox and checkbox.isChecked():
+                    role_item = self.rolesTableWidget.item(i, 1)
+                    if role_item is not None:
+                        roles.append(role_item.text())
         
+        if name.strip() != "" and description.strip() != "" and heroImgPath != None and heroType != None and heroSide != None and len(roles) > 0:
+            c.execute("INSERT INTO heroes(name,description,sideID,typeID,picturePath,baseStrange,baseAgility,baseIntelect,strUpValue,agilUpValue,intUpValue) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(name,description,heroSide,heroType,heroImgPath,baseStrange,baseAgility,baseIntelligence,upStr,upAgl,upInt,))
+            c.execute("SELECT LAST_INSERT_ID()")
+            hid = c.fetchone()[0]
+            for role in roles:
+                c.execute("SELECT ID FROM role WHERE Value = %s",(role,))
+                roleID = c.fetchone()[0]
+                c.execute("INSERT INTO herorolelist(heroID,roleID) VALUES(%s,%s)",(hid,roleID,))
+            self.InitHeroTables()
+            self.initRolesTable()
+            heroImgPath = None
+            self.heroNameLineEdit.setText('')
+            self.heroDescriptionTextEdit.clear()
+            self.typeComboBox.setCurrentIndex(0)
+            self.sideComboBox.setCurrentIndex(0)
+            self.baseStrSpinBox.setValue(0)
+            self.baseAglSpinBox.setValue(0)
+            self.baseIntSpinBox.setValue(0)
+            self.StrDoubleSpinBox.setValue(0.0)
+            self.AglDoubleSpinBox.setValue(0.0)
+            self.IntDoubleSpinBox.setValue(0.0)
+        else:
+            QtWidgets.QMessageBox.warning(None,"Ошибка","Данные заполнены некорректно",QtWidgets.QMessageBox.StandardButton.Ok)
+        
+    
     def add_friend_to_frame(self, friend_id, nickname, status_id, avatar_path):
         """Добавляет элемент друга на фрейм"""
         
@@ -1282,7 +1391,15 @@ class Ui_MainWindow(object):
                 pass
         self.mmrIcoLabel.setPixmap(QtGui.QPixmap(mmrIco))
         self.mmrIcoLabel.setScaledContents(True)
-        
+        if heroImgPath != None:
+            icon11 = QtGui.QIcon()
+            icon11.addPixmap(QtGui.QPixmap(heroImgPath), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+            self.addIcoButton.setIcon(icon11)
+            self.addIcoButton.setIconSize(QtCore.QSize(77, 69))
+        else:
+            icon12 = QtGui.QIcon()
+            self.addIcoButton.setIcon(icon12)
+            
         
         
         self.clear_frame()
