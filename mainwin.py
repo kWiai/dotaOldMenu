@@ -14,6 +14,7 @@ userID = None
 authDate = None
 currentHeroID = 1
 heroImgPath = None
+s = None
 
 class Ui_MainWindow(object):
     def __init__ (self):
@@ -167,10 +168,10 @@ class Ui_MainWindow(object):
         self.mmrIcoLabel.setPixmap(QtGui.QPixmap("noTitle.png"))
         self.mmrIcoLabel.setScaledContents(True)
         self.mmrIcoLabel.setObjectName("mmrIcoLabel")
-        self.favoriteButton3 = QtWidgets.QPushButton(parent=self.profileFrame)
-        self.favoriteButton3.setGeometry(QtCore.QRect(190, 80, 81, 61))
-        self.favoriteButton3.setText("")
-        self.favoriteButton3.setObjectName("favoriteButton3")
+        self.favouriteButton3 = QtWidgets.QPushButton(parent=self.profileFrame)
+        self.favouriteButton3.setGeometry(QtCore.QRect(190, 80, 81, 61))
+        self.favouriteButton3.setText("")
+        self.favouriteButton3.setObjectName("favouriteButton3")
         self.favouriteButton2 = QtWidgets.QPushButton(parent=self.profileFrame)
         self.favouriteButton2.setGeometry(QtCore.QRect(100, 80, 81, 61))
         self.favouriteButton2.setText("")
@@ -404,7 +405,7 @@ class Ui_MainWindow(object):
         self.favouriteButton3Profile = QtWidgets.QPushButton(parent=self.tab_2)
         self.favouriteButton3Profile.setGeometry(QtCore.QRect(310, 90, 71, 51))
         self.favouriteButton3Profile.setText("")
-        self.favouriteButton3Profile.setObjectName("favoriteButton3Profile")
+        self.favouriteButton3Profile.setObjectName("favouriteButton3Profile")
         self.favouriteButton3Profile.clicked.connect(lambda: self.setFavourite(3))
         self.frame_6 = QtWidgets.QFrame(parent=self.tab_2)
         self.frame_6.setGeometry(QtCore.QRect(130, 150, 261, 81))
@@ -768,6 +769,66 @@ class Ui_MainWindow(object):
         self.intr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
         self.intr_layout.setSpacing(5)
         self.intr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.favouriteHeroFrame = QtWidgets.QFrame(parent=self.tab_2)
+        self.favouriteHeroFrame.setGeometry(QtCore.QRect(400, 80, 531, 401))
+        self.favouriteHeroFrame.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
+        self.favouriteHeroFrame.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.favouriteHeroFrame.setObjectName("favouriteHeroFrame")
+        self.strangeFrameLeft = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.strangeFrameLeft.setGeometry(QtCore.QRect(0, 0, 261, 131))
+        self.strangeFrameLeft.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.strangeFrameLeft.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.strangeFrameLeft.setObjectName("strangeFrameLeft")
+        self.strangeFrameRight = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.strangeFrameRight.setGeometry(QtCore.QRect(270, 0, 261, 131))
+        self.strangeFrameRight.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.strangeFrameRight.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.strangeFrameRight.setObjectName("strangeFrameRight")
+        self.agilityFrameLeft = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.agilityFrameLeft.setGeometry(QtCore.QRect(0, 130, 261, 131))
+        self.agilityFrameLeft.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.agilityFrameLeft.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.agilityFrameLeft.setObjectName("agilityFrameLeft")
+        self.intelligenceFrameLeft = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.intelligenceFrameLeft.setGeometry(QtCore.QRect(0, 260, 261, 131))
+        self.intelligenceFrameLeft.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.intelligenceFrameLeft.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.intelligenceFrameLeft.setObjectName("intelligenceFrameLeft")
+        self.agilityFrameRight = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.agilityFrameRight.setGeometry(QtCore.QRect(270, 130, 261, 131))
+        self.agilityFrameRight.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.agilityFrameRight.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.agilityFrameRight.setObjectName("agilityFrameRight")
+        self.intelligenceFrameRight = QtWidgets.QFrame(parent=self.favouriteHeroFrame)
+        self.intelligenceFrameRight.setGeometry(QtCore.QRect(270, 260, 261, 131))
+        self.intelligenceFrameRight.setFrameShape(QtWidgets.QFrame.Shape.Panel)
+        self.intelligenceFrameRight.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
+        self.intelligenceFrameRight.setObjectName("intelligenceFrameRight")
+        self.fstrl_layout = QtWidgets.QVBoxLayout(self.strangeFrameLeft)
+        self.fstrl_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fstrl_layout.setSpacing(5)
+        self.fstrl_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.fstrr_layout = QtWidgets.QVBoxLayout(self.strangeFrameRight)
+        self.fstrr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fstrr_layout.setSpacing(5)
+        self.fstrr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.fagill_layout = QtWidgets.QVBoxLayout(self.agilityFrameLeft)
+        self.fagill_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fagill_layout.setSpacing(5)
+        self.fagill_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.fagilr_layout = QtWidgets.QVBoxLayout(self.agilityFrameRight)
+        self.fagilr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fagilr_layout.setSpacing(5)
+        self.fagilr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.fintl_layout = QtWidgets.QVBoxLayout(self.intelligenceFrameLeft)
+        self.fintl_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fintl_layout.setSpacing(5)
+        self.fintl_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.fintr_layout = QtWidgets.QVBoxLayout(self.intelligenceFrameRight)
+        self.fintr_layout.setContentsMargins(5, 50, 5, 5)  # Отступ сверху для кнопок
+        self.fintr_layout.setSpacing(5)
+        self.fintr_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
+        self.favouriteHeroFrame.setVisible(False)
         self.backgroundLabel.raise_()
         self.frame.raise_()
         self.profileFrame.raise_()
@@ -776,6 +837,7 @@ class Ui_MainWindow(object):
         self.playButton.raise_()
         self.tabWidget.raise_()
         self.changeBackgroundButton.raise_()
+        self.favouriteHeroFrame.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -1005,8 +1067,20 @@ class Ui_MainWindow(object):
             self.frame_4.setVisible(False)
             self.tabWidget.setVisible(True)
     def setFavourite(self,slot):
+        global s
         if self.friendProfileID == 0:
-            print(slot)
+            self.favouriteHeroFrame.setVisible(True)
+            s = slot
+            
+    def changeFavourite(self,hid):
+        c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = %s",(userID,s,))
+        if c.fetchone() == None:
+            c.execute("INSERT INTO favouriteshero(playerID,heroID,num) VALUES(%s,%s,%s)",(userID,hid,s,))
+        else:
+            c.execute("UPDATE favouriteshero SET heroID = %s WHERE playerID = %s AND num = %s",(hid,userID,s,))
+        self.update()
+        self.favouriteHeroFrame.setVisible(False)
+            
     def changeHeroIco(self):
         global heroImgPath
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self.centralwidget, "Выберите файл", "", "All Files (*)")
@@ -1069,11 +1143,12 @@ class Ui_MainWindow(object):
         
         # Настраиваем выравнивание для всех layout
         for layout in [self.strl_layout, self.strr_layout, self.agill_layout, 
-                    self.agilr_layout, self.intl_layout, self.intr_layout]:
+                    self.agilr_layout, self.intl_layout, self.intr_layout,self.fstrl_layout, self.fstrr_layout, self.fagill_layout, 
+                    self.fagilr_layout, self.fintl_layout, self.fintr_layout]:
             layout.setSpacing(2)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignLeft)
-        
+
         c.execute("SELECT ID,picturePath,sideID,typeID FROM heroes")
         results = c.fetchall()
         
@@ -1083,22 +1158,33 @@ class Ui_MainWindow(object):
             'agilleft': [], 'agilright': [],
             'intleft': [], 'intright': []
         }
+        fcategories = {
+            'fstrleft': [], 'fstrright': [],
+            'fagilleft': [], 'fagilright': [],
+            'fintleft': [], 'fintright': []
+        }
         
         for res in results:
             hero_id, pic_path, side_id, type_id = res
             
             if side_id == 1 and type_id == 1:
                 categories['strleft'].append([hero_id, pic_path])
+                fcategories['fstrleft'].append([hero_id, pic_path])
             elif side_id == 2 and type_id == 1:
                 categories['strright'].append([hero_id, pic_path])
+                fcategories['fstrright'].append([hero_id, pic_path])
             elif side_id == 1 and type_id == 2:
                 categories['agilleft'].append([hero_id, pic_path])
+                fcategories['fagilleft'].append([hero_id, pic_path])
             elif side_id == 2 and type_id == 2:
                 categories['agilright'].append([hero_id, pic_path])
+                fcategories['fagilright'].append([hero_id, pic_path])
             elif side_id == 1 and type_id == 3:
                 categories['intleft'].append([hero_id, pic_path])
+                fcategories['fintleft'].append([hero_id, pic_path])
             elif side_id == 2 and type_id == 3:
                 categories['intright'].append([hero_id, pic_path])
+                fcategories['fintright'].append([hero_id, pic_path])
         
         # Добавляем героев в layout
         for category_name, hero_list in categories.items():
@@ -1108,13 +1194,31 @@ class Ui_MainWindow(object):
                 'agilleft': self.agill_layout,
                 'agilright': self.agilr_layout,
                 'intleft': self.intl_layout,
-                'intright': self.intr_layout
+                'intright': self.intr_layout,
             }
             
-            layout = layout_map[category_name]
-            self.add_heroes_to_layout_simple(hero_list, layout)
+            if category_name in layout_map:
+                layout = layout_map[category_name]
+                # Передаем тот же список героев для основного лейаута
+                self.add_heroes_to_layout_simple(hero_list, layout, None)
+        
+        # Добавляем героев в layout избранных (favorites)
+        for category_name, hero_list in fcategories.items():
+            flayout_map = {
+                'fstrleft': self.fstrl_layout,
+                'fstrright': self.fstrr_layout,
+                'fagilleft': self.fagill_layout,
+                'fagilright': self.fagilr_layout,
+                'fintleft': self.fintl_layout,
+                'fintright': self.fintr_layout
+            }
+            
+            if category_name in flayout_map:
+                flayout = flayout_map[category_name]
+                # Передаем None для основного лейаута и заполняем только избранный
+                self.add_heroes_to_layout_simple(hero_list, None, flayout)
 
-    def add_heroes_to_layout_simple(self, hero_list, layout):
+    def add_heroes_to_layout_simple(self, hero_list, layout, flayout):
         """Простая версия добавления героев с выравниванием в левом верхнем углу"""
         if not hero_list:
             return
@@ -1133,6 +1237,14 @@ class Ui_MainWindow(object):
         row = 0
         col = 0
         
+        fcontainer = QtWidgets.QWidget()
+        fgrid_layout = QtWidgets.QGridLayout(fcontainer)
+        fgrid_layout.setSpacing(2)
+        fgrid_layout.setContentsMargins(0, 0, 0, 0)
+        
+        frow = 0
+        fcol = 0
+        
         for hero in hero_list:
             # Создаем кнопку
             hero_button = QtWidgets.QPushButton()
@@ -1140,6 +1252,18 @@ class Ui_MainWindow(object):
             
             # Стиль без рамок
             hero_button.setStyleSheet("""
+                QPushButton {
+                    border: none;
+                    padding: 0px;
+                    background-color: transparent;
+                }
+                QPushButton:hover {
+                    border: 2px solid #ff6600;
+                }
+            """)
+            fhero_button = QtWidgets.QPushButton()
+            fhero_button.setFixedSize(button_width, button_height)
+            fhero_button.setStyleSheet("""
                 QPushButton {
                     border: none;
                     padding: 0px;
@@ -1165,25 +1289,38 @@ class Ui_MainWindow(object):
                     # Создаем кнопку с иконкой, которая полностью заполняет кнопку
                     hero_button.setIcon(QtGui.QIcon(scaled_pixmap))
                     hero_button.setIconSize(QtCore.QSize(button_width, button_height))
+                    fhero_button.setIcon(QtGui.QIcon(scaled_pixmap))
+                    fhero_button.setIconSize(QtCore.QSize(button_width, button_height))
                 except:
                     hero_button.setText(str(hero[0]))
+                    fhero_button.setText(str(hero[0]))
             else:
                 hero_button.setText(str(hero[0]))
+                fhero_button.setText(str(hero[0]))
             
             # Подключаем клик
             hero_button.clicked.connect(lambda checked, hid=hero[0]: self.changeHeroID(hid))
+            fhero_button.clicked.connect(lambda checked, hid=hero[0]: self.changeFavourite(hid))
             
             # Добавляем в grid
             grid_layout.addWidget(hero_button, row, col)
+            fgrid_layout.addWidget(fhero_button, row, col)
             
             # Обновляем позицию
             col += 1
             if col >= buttons_per_row:
                 col = 0
                 row += 1
+            fcol += 1
+            if fcol >= buttons_per_row:
+                fcol = 0
+                frow += 1
         
         # Добавляем контейнер в основной layout
-        layout.addWidget(container)
+        if layout != None:
+            layout.addWidget(container)
+        if flayout != None:
+            flayout.addWidget(fcontainer)
     def clear_layout(self, layout):
         """Очищает layout от всех виджетов"""
         if layout is not None:
@@ -1197,7 +1334,10 @@ class Ui_MainWindow(object):
         layouts = [
             self.strl_layout, self.strr_layout,
             self.agill_layout, self.agilr_layout,
-            self.intl_layout, self.intr_layout
+            self.intl_layout, self.intr_layout,
+            self.fstrl_layout, self.fstrr_layout,
+            self.fagill_layout, self.fagilr_layout,
+            self.fintl_layout, self.fintr_layout
         ]
         
         for layout in layouts:
@@ -1436,10 +1576,96 @@ class Ui_MainWindow(object):
             self.levelLabel.setText(str(results[8]))
             dt = results[9]
             self.dateInGameLabel.setText(dt.strftime('%d.%m.%Y'))
+            c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 1",(userID,))
+            f = c.fetchone()
+            if f == None:
+                pass
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    fico1 = QtGui.QIcon()
+                    fico1.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton1.setIcon(fico1)
+                    self.favouriteButton1.setIconSize(QtCore.QSize(80,60))
+                    self.favouriteButton1Profile.setIcon(fico1)
+                    self.favouriteButton1Profile.setIconSize(QtCore.QSize(80,60))
+                
+            c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 2",(userID,))
+            f = c.fetchone()
+            if f == None:
+                pass
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    fico2 = QtGui.QIcon()
+                    fico2.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton2.setIcon(fico2)
+                    self.favouriteButton2.setIconSize(QtCore.QSize(80,60))
+                    self.favouriteButton2Profile.setIcon(fico2)
+                    self.favouriteButton2Profile.setIconSize(QtCore.QSize(80,60))
+                
+                c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 3",(userID,))
+            f = c.fetchone()
+            if f == None:
+                pass
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    fico3 = QtGui.QIcon()
+                    fico3.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton3.setIcon(fico3)
+                    self.favouriteButton3.setIconSize(QtCore.QSize(80,60))
+                    self.favouriteButton3Profile.setIcon(fico3)
+                    self.favouriteButton3Profile.setIconSize(QtCore.QSize(80,60))
         
         else:
             c.execute("SELECT nickname,winValue,looseValue,ratingValue,cristalsValue,avatarPath,statusID,backgroundPath,level,DateCreate FROM player WHERE ID = %s",(self.friendProfileID,))
             frResults = c.fetchone()
+            c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 1",(self.friendProfileID,))
+            f = c.fetchone()
+            if f == None:
+                sico = QtGui.QIcon()
+                self.favouriteButton1Profile.setIcon(sico)
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    ffico1 = QtGui.QIcon()
+                    ffico1.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton1Profile.setIcon(ffico1)
+                    self.favouriteButton1Profile.setIconSize(QtCore.QSize(80,60))
+                
+            c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 2",(self.friendProfileID,))
+            f = c.fetchone()
+            if f == None:
+                sico = QtGui.QIcon()
+                self.favouriteButton2Profile.setIcon(sico)
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    ffico2 = QtGui.QIcon()
+                    ffico2.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton2Profile.setIcon(ffico2)
+                    self.favouriteButton2Profile.setIconSize(QtCore.QSize(80,60))
+                
+                c.execute("SELECT heroID FROM favouriteshero WHERE playerID = %s AND num = 3",(self.friendProfileID,))
+            f = c.fetchone()
+            if f == None:
+                sico = QtGui.QIcon()
+                self.favouriteButton3Profile.setIcon(sico)
+            else:
+                c.execute("SELECT picturePath FROM heroes WHERE ID = %s",(f[0],))
+                picture = c.fetchone()
+                if picture != None:
+                    ffico3 = QtGui.QIcon()
+                    ffico3.addPixmap(QtGui.QPixmap(picture[0]),QtGui.QIcon.Mode.Normal,QtGui.QIcon.State.Off)
+                    self.favouriteButton3Profile.setIcon(ffico3)
+                    self.favouriteButton3Profile.setIconSize(QtCore.QSize(80,60))
+                    
             mmr = int(frResults[3])
             mmrIco = "noTitle.png"
             match mmr:
